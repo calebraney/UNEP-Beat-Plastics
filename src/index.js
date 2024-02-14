@@ -19,8 +19,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const PARALLAX_TRIGGER = '[data-ix-parallax="trigger"]';
     //options
     const PARALLAX_TYPE = 'data-ix-parallax-type';
-    const PARALLAX_END = 'data-ix-parallax-end';
-    const PARALLAX_MOVE = 'data-ix-parallax-move';
 
     const parallaxItems = gsap.utils.toArray(PARALLAX_WRAP);
     parallaxItems.forEach((parallaxItem) => {
@@ -40,6 +38,7 @@ document.addEventListener('DOMContentLoaded', function () {
       };
       //check for animationType of cover
       if (animationType === 'cover') {
+        settings.start = 'bottom bottom';
         settings.end = 'bottom top';
         settings.moveStart = '0vh';
         settings.moveEnd = '100vh';
@@ -48,13 +47,12 @@ document.addEventListener('DOMContentLoaded', function () {
       if (animationType === 'parallax') {
         settings.moveStart = '-50vh';
         settings.moveEnd = '0vh';
-        settings.scrub = 0.5;
       }
 
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: trigger,
-          markers: true,
+          markers: false,
           start: settings.start,
           end: settings.end,
           scrub: settings.scrub,
