@@ -7,14 +7,80 @@ document.addEventListener('DOMContentLoaded', function () {
   //////////////////////////////
   //Global Variables
 
+  // define variable for global use
+  gsap.registerPlugin(ScrollTrigger);
+
   //////////////////////////////
   //GSAP Animations
+  const parallax = function () {
+    //elements
+    const PARALLAX_WRAP = '[data-ix-parallax="wrap"]';
+    const PARALLAX_SECTION = '[data-ix-parallax="section"]';
+    const PARALLAX_TRIGGER = '[data-ix-parallax="trigger"]';
+    //options
+    const PARALLAX_TYPE = 'data-ix-parallax-type';
+    const PARALLAX_END = 'data-ix-parallax-end';
+    const PARALLAX_MOVE = 'data-ix-parallax-move';
+
+    const parallaxItems = gsap.utils.toArray(PARALLAX_WRAP);
+    parallaxItems.forEach((parallaxItem) => {
+      const section = parallaxItem.querySelector(PARALLAX_SECTION);
+      const trigger = parallaxItem.querySelector(PARALLAX_TRIGGER);
+      if (!section || !trigger) return;
+      //set default animation type
+      let animationType = 'uncover';
+      animationType = attr('uncover', parallaxItem.getAttribute(PARALLAX_TYPE));
+      // default GSAP options
+      const settings = {
+        scrub: true,
+        start: 'top bottom',
+        end: 'top top',
+        moveStart: '-100vh',
+        moveEnd: '0vh',
+      };
+      //check for animationType of cover
+      if (animationType === 'cover') {
+        settings.end = 'bottom top';
+        settings.moveStart = '0vh';
+        settings.moveEnd = '100vh';
+      }
+      //check for animationType of parallax
+      if (animationType === 'parallax') {
+        settings.moveStart = '-50vh';
+        settings.moveEnd = '0vh';
+        settings.scrub = 0.5;
+      }
+
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: trigger,
+          markers: true,
+          start: settings.start,
+          end: settings.end,
+          scrub: settings.scrub,
+        },
+        defaults: {
+          duration: 1,
+          ease: 'none',
+        },
+      });
+      tl.fromTo(
+        section,
+        {
+          y: settings.moveStart,
+        },
+        {
+          y: settings.moveEnd,
+        }
+      );
+    });
+  };
 
   const mouseOver = function () {
     //elements
     const MOUSEOVER_WRAP = '[data-ix-mouseover="wrap"]';
     const MOUSEOVER_LAYER = '[data-ix-mouseover="layer"]';
-    const MOUSEOVER_TARGET = '[data-ix-mouseover="target"]';
+    const MOUSEOVER_TRIGGER = '[data-ix-mouseover="trigger"]';
     //options
     const MOUSEOVER_DURATION = 'data-ix-mouseover-duration';
     const MOUSEOVER_EASE = 'data-ix-mouseover-ease';
@@ -23,13 +89,13 @@ document.addEventListener('DOMContentLoaded', function () {
     const MOUSEOVER_ROTATE_Z = 'data-ix-mouseover-rotate-z';
 
     // select the items
-    const mouseOverItems = document.querySelectorAll(MOUSEOVER_WRAP);
+    const mouseOverItems = gsap.utils.toArray(MOUSEOVER_WRAP);
     mouseOverItems.forEach((mouseOverItem) => {
       const layers = mouseOverItem.querySelectorAll(MOUSEOVER_LAYER);
       // return if items are null
       if (layers.length === 0) return;
       // find the target element if one exists, otherwise tge parent is the target
-      let target = mouseOverItem.querySelector(MOUSEOVER_TARGET);
+      let target = mouseOverItem.querySelector(MOUSEOVER_TRIGGER);
       if (!target) {
         target = mouseOverItem;
       }
@@ -116,9 +182,9 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   };
 
-  const mouseHover = function () {
+  const hoverActive = function () {
     //constants
-    const HOVER_WRAP = '[data-ix-mousehover="wrap"]';
+    const HOVER_WRAP = '[data-ix-hoveractive="wrap"]';
     // get all links without a no-hover attribute and any other elements with a hover attribute into an array
     const hoverElements = gsap.utils.toArray(HOVER_WRAP);
     const activeClass = 'is-active';
@@ -148,8 +214,9 @@ document.addEventListener('DOMContentLoaded', function () {
       (context) => {
         let { isMobile, isTablet, isDesktop, reduceMotion } = context.conditions;
         // run animation functions
-        mouseHover();
+        hoverActive();
         mouseOver();
+        parallax();
       }
     );
   };
