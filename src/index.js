@@ -1,22 +1,52 @@
 import { attr } from './utilities';
+import SplitType from 'split-type';
+import Lenis from '@studio-freight/lenis';
+import Swiper from 'swiper';
+import { Navigation, Pagination, Autoplay } from 'swiper/modules';
 
 document.addEventListener('DOMContentLoaded', function () {
   // Comment out for production
   console.log('Local Script Loaded');
 
-  //////////////////////////////
-  //Global Variables
-
-  // define variable for global use
+  // register gsap plugin
   gsap.registerPlugin(ScrollTrigger);
 
   //////////////////////////////
+  //Global Variables
+  const resetGSAPTriggers = document.querySelectorAll('[data-ix-reset]');
+
+  //////////////////////////////
+  //LENIS Smoothscroll
+
+  const lenis = new Lenis({
+    duration: 1,
+    easing: (t) => (t === 1 ? 1 : 1 - Math.pow(2, -10 * t)), // https://easings.net
+    touchMultiplier: 1.5,
+  });
+  // lenis request animation from
+  function raf(time) {
+    lenis.raf(time);
+    requestAnimationFrame(raf);
+  }
+  requestAnimationFrame(raf);
+
+  // Keep lenis and scrolltrigger in sync
+  lenis.on('scroll', () => {
+    if (!ScrollTrigger) return;
+    ScrollTrigger.update();
+  });
+
+  //////////////////////////////
   //GSAP Animations
-  const parallax = function () {
+  const parallax = function (isMobile, isTablet, isDesktop) {
     //elements
     const PARALLAX_WRAP = '[data-ix-parallax="wrap"]';
     const PARALLAX_SECTION = '[data-ix-parallax="section"]';
     const PARALLAX_TRIGGER = '[data-ix-parallax="trigger"]';
+    //breakpoint options
+    const RUN_DESKTOP = 'data-ix-parallax-tablet';
+    const RUN_TABLET = 'data-ix-parallax-tablet';
+    const RUN_MOBILE = 'data-ix-parallax-mobile';
     //options
     const PARALLAX_TYPE = 'data-ix-parallax-type';
 
@@ -28,6 +58,16 @@ document.addEventListener('DOMContentLoaded', function () {
       //set default animation type
       let animationType = 'uncover';
       animationType = attr('uncover', parallaxItem.getAttribute(PARALLAX_TYPE));
+
+      //check breakpoints and quit function if set on specific breakpoints
+      runMobile = attr(true, parallaxItem.getAttribute(RUN_MOBILE));
+      runTablet = attr(true, parallaxItem.getAttribute(RUN_TABLET));
+      runDesktop = attr(true, parallaxItem.getAttribute(RUN_DESKTOP));
+      if ((runMobile = false && isMobile)) return;
+      if ((runTablet = false && isTablet)) return;
+      if ((runDesktop = false && isDesktop)) return;
+
+      // animationType = attr('uncover', parallaxItem.getAttribute(PARALLAX_TYPE));
       // default GSAP options
       const settings = {
         scrub: true,
@@ -74,7 +114,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   };
 
-  const mouseOver = function () {
+  const mouseOver = function (isMobile, isTablet, isDesktop) {
     //elements
     const MOUSEOVER_WRAP = '[data-ix-mouseover="wrap"]';
     const MOUSEOVER_LAYER = '[data-ix-mouseover="layer"]';
@@ -85,6 +125,10 @@ document.addEventListener('DOMContentLoaded', function () {
     const MOUSEOVER_MOVE_X = 'data-ix-mouseover-move-x';
     const MOUSEOVER_MOVE_Y = 'data-ix-mouseover-move-y';
     const MOUSEOVER_ROTATE_Z = 'data-ix-mouseover-rotate-z';
+    //breakpoint options
+    const RUN_DESKTOP = 'data-ix-parallax-tablet';
+    const RUN_TABLET = 'data-ix-parallax-tablet';
+    const RUN_MOBILE = 'data-ix-parallax-mobile';
 
     // select the items
     const mouseOverItems = gsap.utils.toArray(MOUSEOVER_WRAP);
@@ -97,6 +141,14 @@ document.addEventListener('DOMContentLoaded', function () {
       if (!target) {
         target = mouseOverItem;
       }
+
+      //check breakpoints and quit function if set on specific breakpoints
+      runMobile = attr(true, mouseOverItem.getAttribute(RUN_MOBILE));
+      runTablet = attr(true, mouseOverItem.getAttribute(RUN_TABLET));
+      runDesktop = attr(true, mouseOverItem.getAttribute(RUN_DESKTOP));
+      if ((runMobile = false && isMobile)) return;
+      if ((runTablet = false && isTablet)) return;
+      if ((runDesktop = false && isDesktop)) return;
 
       //handle mouse movement
       const mouseMove = function () {
@@ -180,9 +232,13 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   };
 
-  const hoverActive = function () {
-    //constants
+  const hoverActive = function (isMobile, isTablet, isDesktop) {
+    //elements
     const HOVER_WRAP = '[data-ix-hoveractive="wrap"]';
+    //breakpoint options
+    const RUN_DESKTOP = 'data-ix-parallax-tablet';
+    const RUN_TABLET = 'data-ix-parallax-tablet';
+    const RUN_MOBILE = 'data-ix-parallax-mobile';
     // get all links without a no-hover attribute and any other elements with a hover attribute into an array
     const hoverElements = gsap.utils.toArray(HOVER_WRAP);
     const activeClass = 'is-active';
@@ -193,6 +249,47 @@ document.addEventListener('DOMContentLoaded', function () {
       });
       item.addEventListener('mouseleave', function (e) {
         item.classList.remove(activeClass);
+      });
+    });
+  };
+  //////////////////////////////
+  //swiper
+  const sourcesSlider = function () {
+    const sliderWrap = '.swiper';
+    const nextButton = '.swiper-next';
+    const previousButton = '.swiper-prev';
+    const activeClass = 'is-active';
+    const disabledClass = 'is-disabled';
+
+    gsap.utils.toArray(sliderWrap).forEach(function (element) {
+      nextButtonEl = element.querySelector(nextButton);
+      previousButtonEl = element.querySelector(previousButton);
+      if (!element || !nextButtonEl || !previousButtonEl) return;
+      const swiper = new Swiper(element, {
+        modules: [Navigation, Pagination],
+        slidesPerView: 1,
+        spaceBetween: '5%',
+        speed: 600,
+        loop: true,
+        drag: false,
+        followFinger: false,
+        freeMode: false,
+        updateOnMove: true,
+        rewind: false,
+        pagination: {
+          el: element.querySelector('.swiper-bullet-wrapper'),
+          bulletActiveClass: 'is-active',
+          bulletClass: 'swiper-bullet',
+          bulletElement: 'button',
+          clickable: true,
+        },
+        navigation: {
+          nextEl: nextButtonEl,
+          prevEl: previousButtonEl,
+          disabledClass: disabledClass,
+        },
+        slideActiveClass: activeClass,
+        slideDuplicateActiveClass: activeClass,
       });
     });
   };
@@ -212,30 +309,21 @@ document.addEventListener('DOMContentLoaded', function () {
       (context) => {
         let { isMobile, isTablet, isDesktop, reduceMotion } = context.conditions;
         // run animation functions
-        hoverActive();
-        mouseOver();
-        parallax();
+        hoverActive(isMobile, isTablet, isDesktop);
+        mouseOver(isMobile, isTablet, isDesktop);
+        parallax(isMobile, isTablet, isDesktop);
+        if (isMobile) {
+          sourcesSlider();
+        }
       }
     );
   };
   gsapInit();
+
+  //reset gsap on click of reset triggers
+  resetGSAPTriggers.forEach(function (item) {
+    item.addEventListener('click', function (e) {
+      scrollTrigger.refresh();
+    });
+  });
 });
-
-/*
-
-//get the item width and height information
-const positionInfo = itemWrap.getBoundingClientRect();
-const height = positionInfo.height;
-const width = positionInfo.width;
-//get items offset width and height
-const offsetWidth = itemWrap.offsetWidth;
-const offsetHeight = itemWrap.offsetHeight;
-
-// getting the horizontal and vertical positions of the mouse and dividing it by the total screen width
-let mousePercentX = e.clientX / window.innerWidth;
-//optional step to remove interaction on the extremes of the item
-// mousePercentX = gsap.utils.normalize(0.2, 0.8, mousePercentX);
-
-let mousePercentY = e.clientY / window.innerHeight;
-
-*/
