@@ -1,4 +1,5 @@
 import { attr } from './utilities';
+import { checkBreakpoints } from './utilities';
 import SplitType from 'split-type';
 import Lenis from '@studio-freight/lenis';
 import Swiper from 'swiper';
@@ -10,6 +11,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // register gsap plugin
   gsap.registerPlugin(ScrollTrigger);
+  gsap.registerPlugin(Flip);
 
   //////////////////////////////
   //Global Variables
@@ -36,17 +38,137 @@ document.addEventListener('DOMContentLoaded', function () {
     ScrollTrigger.update();
   });
 
+  //handle anchor links
+  function anchorLinks() {
+    const anchorLinks = document.querySelectorAll('[data-scroll-to]');
+    if (anchorLinks == null) {
+      return;
+    }
+    anchorLinks.forEach((item) => {
+      const targetID = item.getAttribute('data-scroll-to');
+      const immediateScroll = attr(false, item.getAttribute('data-scroll-immediate'));
+      const target = document.getElementById(targetID);
+      if (!target) return;
+      item.addEventListener('click', (event) => {
+        lenis.scrollTo(target, {
+          immediate: immediateScroll,
+          duration: 1.85,
+          easing: (t) => (t === 1 ? 1 : 1 - Math.pow(2, -10 * t)),
+        });
+      });
+    });
+  }
+  anchorLinks();
+
   //////////////////////////////
   //GSAP Animations
-  const parallax = function (isMobile, isTablet, isDesktop) {
+
+  const menu = function (gsapContext) {
+    const ANIMATION_ID = 'menu';
+    const MENU_WRAP = `[data-ix-menu="wrap"]`;
+    const MENU_ITEM = `[data-ix-menu="item"]`;
+    // const MENU_LINK = `[data-ix-menu="link"]`;
+    // const MENU_SUB_LIST = `[data-ix-menu="sub-list"]`;
+    const MENU_NUMBER = 'data-ix-menu-number';
+    const ACTIVE_CLASS = 'is-active';
+    const OPEN_CLASS = 'is-open';
+    const MENU_ANCHORS = '[data-ix-menu="anchor"]';
+    const MENU_TARGET_ABOVE = 'data-ix-menu-above';
+    const MENU_TARGET_BELOW = 'data-ix-menu-below';
+
+    const menuWrap = document.querySelector(MENU_WRAP);
+    const menuItems = gsap.utils.toArray(MENU_ITEM);
+    if (menuItems.length === 0 || !menuWrap) return;
+
+    //function to activate menu items
+    const activateMenuItem = function (activeItem) {
+      //get state of items
+      const state = Flip.getState([menuItems], {
+        // props: 'rotateX.rotateY,rotateZ',
+        nested: true,
+        absolute: true,
+      });
+      menuItems.forEach((item) => {
+        //if the item is the active one add the class otherwise remove it
+        if (item === activeItem) {
+          activeItem.classList.add(ACTIVE_CLASS);
+        } else {
+          item.classList.remove(ACTIVE_CLASS);
+        }
+      });
+      // animate element
+      Flip.from(state, {
+        duration: 0.6,
+        ease: 'power2.out',
+      });
+    };
+    //handle active classes and gsap flip
+    menuItems.forEach((item) => {
+      item.addEventListener('click', function (e) {
+        activateMenuItem(item);
+      });
+    });
+
+    // hide and show menu in specific sections
+    const anchorItems = gsap.utils.toArray(MENU_ANCHORS);
+    anchorItems.forEach((item) => {
+      // console.log(item);
+      let topTargetNumber = attr(0, item.getAttribute(MENU_TARGET_ABOVE));
+      let bottomTargetNumber = attr(0, item.getAttribute(MENU_TARGET_BELOW));
+      // console.log(topTargetNumber, bottomTargetNumber);
+
+      //resuable function for the scroll anchors
+      const activateTop = function () {
+        if (topTargetNumber === 0) {
+          // if the enter target is zero open the menu
+          menuWrap.classList.remove(OPEN_CLASS);
+        } else {
+          menuWrap.classList.add(OPEN_CLASS);
+          const enterTarget = document.querySelector(`[${MENU_NUMBER}="${topTargetNumber}"]`);
+          if (!enterTarget) return;
+          activateMenuItem(enterTarget);
+        }
+      };
+      const activateBottom = function () {
+        if (bottomTargetNumber === 0) {
+          // if the enter target is zero open the menu
+          menuWrap.classList.remove(OPEN_CLASS);
+        } else {
+          menuWrap.classList.add(OPEN_CLASS);
+          const enterTarget = document.querySelector(`[${MENU_NUMBER}="${bottomTargetNumber}"]`);
+          if (!enterTarget) return;
+          activateMenuItem(enterTarget);
+        }
+      };
+      ScrollTrigger.create({
+        trigger: item,
+        markers: false,
+        start: 'center 10%',
+        end: 'center 11%',
+        onEnter: () => {
+          console.log('enter');
+          activateBottom();
+        },
+        onLeave: () => {
+          // console.log('leave');
+        },
+        onEnterBack: () => {
+          // console.log('enter back');
+          activateTop();
+        },
+        onLeaveBack: () => {
+          // console.log('leave back');
+        },
+      });
+    });
+  };
+  const parallax = function (gsapContext) {
+    //animation ID
+    const ANIMATION_ID = 'parallax';
     //elements
-    const PARALLAX_WRAP = '[data-ix-parallax="wrap"]';
-    const PARALLAX_SECTION = '[data-ix-parallax="section"]';
-    const PARALLAX_TRIGGER = '[data-ix-parallax="trigger"]';
-    //breakpoint options
-    const RUN_DESKTOP = 'data-ix-parallax-tablet';
-    const RUN_TABLET = 'data-ix-parallax-tablet';
-    const RUN_MOBILE = 'data-ix-parallax-mobile';
+    const PARALLAX_WRAP = `[data-ix-parallax="wrap"]`;
+    const PARALLAX_SECTION = `[data-ix-parallax="section"]`;
+    const PARALLAX_TRIGGER = `[data-ix-parallax="trigger"]`;
     //options
     const PARALLAX_TYPE = 'data-ix-parallax-type';
 
@@ -54,21 +176,17 @@ document.addEventListener('DOMContentLoaded', function () {
     parallaxItems.forEach((parallaxItem) => {
       const section = parallaxItem.querySelector(PARALLAX_SECTION);
       const trigger = parallaxItem.querySelector(PARALLAX_TRIGGER);
-      if (!section || !trigger) return;
+      if (!parallaxItem || !section || !trigger) return;
       //set default animation type
       let animationType = 'uncover';
       animationType = attr('uncover', parallaxItem.getAttribute(PARALLAX_TYPE));
 
       //check breakpoints and quit function if set on specific breakpoints
-      runMobile = attr(true, parallaxItem.getAttribute(RUN_MOBILE));
-      runTablet = attr(true, parallaxItem.getAttribute(RUN_TABLET));
-      runDesktop = attr(true, parallaxItem.getAttribute(RUN_DESKTOP));
-      if ((runMobile = false && isMobile)) return;
-      if ((runTablet = false && isTablet)) return;
-      if ((runDesktop = false && isDesktop)) return;
+      let runOnBreakpoint = checkBreakpoints(parallaxItem, ANIMATION_ID, gsapContext);
+      if (runOnBreakpoint === false) return;
 
       // animationType = attr('uncover', parallaxItem.getAttribute(PARALLAX_TYPE));
-      // default GSAP options
+      // default GSAP options for uncover animation
       const settings = {
         scrub: true,
         start: 'top bottom',
@@ -114,7 +232,8 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   };
 
-  const mouseOver = function (isMobile, isTablet, isDesktop) {
+  const mouseOver = function (gsapContext) {
+    const ANIMATION_ID = 'mouseover';
     //elements
     const MOUSEOVER_WRAP = '[data-ix-mouseover="wrap"]';
     const MOUSEOVER_LAYER = '[data-ix-mouseover="layer"]';
@@ -143,12 +262,8 @@ document.addEventListener('DOMContentLoaded', function () {
       }
 
       //check breakpoints and quit function if set on specific breakpoints
-      runMobile = attr(true, mouseOverItem.getAttribute(RUN_MOBILE));
-      runTablet = attr(true, mouseOverItem.getAttribute(RUN_TABLET));
-      runDesktop = attr(true, mouseOverItem.getAttribute(RUN_DESKTOP));
-      if ((runMobile = false && isMobile)) return;
-      if ((runTablet = false && isTablet)) return;
-      if ((runDesktop = false && isDesktop)) return;
+      let runOnBreakpoint = checkBreakpoints(mouseOverItem, ANIMATION_ID, gsapContext);
+      if (runOnBreakpoint === false) return;
 
       //handle mouse movement
       const mouseMove = function () {
@@ -232,18 +347,20 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   };
 
-  const hoverActive = function (isMobile, isTablet, isDesktop) {
+  const hoverActive = function (gsapContext) {
     //elements
+    const ANIMATION_ID = 'hoveractive';
     const HOVER_WRAP = '[data-ix-hoveractive="wrap"]';
-    //breakpoint options
-    const RUN_DESKTOP = 'data-ix-parallax-tablet';
-    const RUN_TABLET = 'data-ix-parallax-tablet';
-    const RUN_MOBILE = 'data-ix-parallax-mobile';
+
     // get all links without a no-hover attribute and any other elements with a hover attribute into an array
     const hoverElements = gsap.utils.toArray(HOVER_WRAP);
     const activeClass = 'is-active';
     hoverElements.forEach((item) => {
       if (!item) return;
+      //check breakpoints and quit function if set on specific breakpoints
+      let runOnBreakpoint = checkBreakpoints(item, ANIMATION_ID, gsapContext);
+      if (runOnBreakpoint === false) return;
+      //add event listener to item
       item.addEventListener('mouseover', function (e) {
         item.classList.add(activeClass);
       });
@@ -296,29 +413,29 @@ document.addEventListener('DOMContentLoaded', function () {
 
   //////////////////////////////
   //Control Functions on page load
-  const gsapInit = function () {
-    let mm = gsap.matchMedia();
-    mm.add(
-      {
-        //This is the conditions object
-        isMobile: '(max-width: 767px)',
-        isTablet: '(min-width: 768px)  and (max-width: 991px)',
-        isDesktop: '(min-width: 992px)',
-        reduceMotion: '(prefers-reduced-motion: reduce)',
-      },
-      (context) => {
-        let { isMobile, isTablet, isDesktop, reduceMotion } = context.conditions;
-        // run animation functions
-        hoverActive(isMobile, isTablet, isDesktop);
-        mouseOver(isMobile, isTablet, isDesktop);
-        parallax(isMobile, isTablet, isDesktop);
-        if (isMobile) {
-          sourcesSlider();
-        }
+
+  let mm = gsap.matchMedia();
+  mm.add(
+    {
+      //This is the conditions object
+      isMobile: '(max-width: 767px)',
+      isTablet: '(min-width: 768px)  and (max-width: 991px)',
+      isDesktop: '(min-width: 992px)',
+      reduceMotion: '(prefers-reduced-motion: reduce)',
+    },
+    (gsapContext) => {
+      let { isMobile, isTablet, isDesktop, reduceMotion } = gsapContext.conditions;
+      // run animation functions
+      hoverActive(gsapContext);
+      mouseOver(gsapContext);
+      parallax(gsapContext);
+      menu(gsapContext);
+
+      if (isMobile) {
+        sourcesSlider();
       }
-    );
-  };
-  gsapInit();
+    }
+  );
 
   //reset gsap on click of reset triggers
   resetGSAPTriggers.forEach(function (item) {

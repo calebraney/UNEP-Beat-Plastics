@@ -19,3 +19,33 @@ export const runSplit = function (text) {
   });
   return typeSplit;
 };
+
+//check for attributes to stop animation on specific breakpoints
+export const checkBreakpoints = function (item, animationID, gsapContext) {
+  //exit if items aren't found
+  if (!item || !animationID || !gsapContext) {
+    console.error('breakpoint error!');
+    return;
+  }
+  //create variables from GSAP context
+  let { isMobile, isTablet, isDesktop, reduceMotion } = gsapContext.conditions;
+
+  //check to see if GSAP context is working
+  if (isMobile === undefined || isTablet === undefined || isDesktop === undefined) {
+    console.error('GSAP Match Media Context Error');
+    return;
+  }
+  //breakpoint options
+  const RUN_DESKTOP = `data-ix-${animationID}-desktop`;
+  const RUN_TABLET = `data-ix-${animationID}-tablet`;
+  const RUN_MOBILE = `data-ix-${animationID}-mobile`;
+  //check breakpoints and quit function if set on specific breakpoints
+  runMobile = attr(true, item.getAttribute(RUN_MOBILE));
+  runTablet = attr(true, item.getAttribute(RUN_TABLET));
+  runDesktop = attr(true, item.getAttribute(RUN_DESKTOP));
+  if (runMobile === false && isMobile) return false;
+  if (runTablet === false && isTablet) return false;
+  if (runDesktop === false && isDesktop) return false;
+  // if no conditions match
+  return true;
+};
