@@ -1,5 +1,4 @@
-import { attr } from './utilities';
-import { checkBreakpoints } from './utilities';
+import { attr, runSplit, checkBreakpoints } from './utilities';
 import SplitType from 'split-type';
 import Lenis from '@studio-freight/lenis';
 import Swiper from 'swiper';
@@ -62,6 +61,137 @@ document.addEventListener('DOMContentLoaded', function () {
 
   //////////////////////////////
   //GSAP Animations
+
+  //resuable timeline creation with option attributes for individual customization per element
+  const scrollInTL = function (item) {
+    //setting attributes
+    const SCROLLIN_TOGGLE_ACTIONS = 'data-ix-scrollin-toggle-actions';
+    const SCROLLIN_SCRUB = 'data-ix-scrollin-scrub';
+    const SCROLLIN_START = 'data-ix-scrollin-start';
+    const SCROLLIN_END = 'data-ix-scrollin-end';
+    // default GSAP options
+    const settings = {
+      scrub: false,
+      toggleActions: 'play none none none',
+      start: 'top 90%',
+      end: 'top 75%',
+    };
+    //override settings if an attribute is present and a valid type.
+    settings.toggleActions = attr(
+      settings.toggleActions,
+      item.getAttribute(SCROLLIN_TOGGLE_ACTIONS)
+    );
+    settings.scrub = attr(settings.scrub, item.getAttribute(SCROLLIN_SCRUB));
+    settings.start = attr(settings.start, item.getAttribute(SCROLLIN_START));
+    settings.end = attr(settings.end, item.getAttribute(SCROLLIN_END));
+    const tl = gsap.timeline({
+      defaults: {
+        duration: 0.6,
+        ease: 'power1.out',
+      },
+      scrollTrigger: {
+        trigger: item,
+        start: settings.start,
+        end: settings.end,
+        toggleActions: settings.toggleActions,
+        scrub: settings.scrub,
+      },
+    });
+    return tl;
+  };
+
+  const scrollInHeading = function () {
+    const SCROLLIN_HEADING = '[data-ix-scrollin="heading"]';
+    const items = gsap.utils.toArray(SCROLLIN_HEADING);
+    items.forEach((item) => {
+      const splitText = runSplit(item);
+      if (!splitText) return;
+      item.style.opacity = 1;
+      const tl = scrollInTL(item);
+      tl.fromTo(
+        splitText.words,
+        {
+          opacity: 0,
+          x: '2rem',
+        },
+        {
+          opacity: 1,
+          x: '0rem',
+          stagger: { each: 0.2, from: 'start' },
+          onComplete: () => {
+            splitText.revert();
+          },
+        }
+      );
+    });
+  };
+
+  const scrollInItem = function () {
+    const SCROLLIN_ITEM = '[data-ix-scrollin="item"]';
+    const items = gsap.utils.toArray(SCROLLIN_ITEM);
+    items.forEach((item) => {
+      if (!item) return;
+      item.style.opacity = 1;
+      const tl = scrollInTL(item);
+      tl.fromTo(
+        item,
+        {
+          opacity: 0,
+          y: '2rem',
+        },
+        {
+          opacity: 1,
+          y: '0rem',
+        }
+      );
+    });
+  };
+
+  const scrollInContainer = function () {
+    const SCROLLIN_CONTAINER = '[data-ix-scrollin="container"]';
+    const items = gsap.utils.toArray(SCROLLIN_CONTAINER);
+    items.forEach((item) => {
+      if (!item) return;
+      const children = gsap.utils.toArray(item.children);
+      if (children.length === 0) return;
+      children.forEach((child) => {
+        const tl = scrollInTL(child);
+        tl.fromTo(
+          child,
+          {
+            opacity: 0,
+            y: '2rem',
+          },
+          {
+            opacity: 1,
+            y: '0rem',
+          }
+        );
+      });
+    });
+  };
+
+  const scrollInStagger = function () {
+    const SCROLLIN_STAGGER = '[data-ix-scrollin="stagger"]';
+    const items = gsap.utils.toArray(SCROLLIN_STAGGER);
+    items.forEach((item) => {
+      const children = gsap.utils.toArray(item.children);
+      if (children.length === 0) return;
+      const tl = scrollInTL(item);
+      tl.fromTo(
+        children,
+        {
+          opacity: 0,
+          y: '2rem',
+        },
+        {
+          opacity: 1,
+          y: '0rem',
+          stagger: { each: 0.1, from: 'start' },
+        }
+      );
+    });
+  };
 
   const menu = function (gsapContext) {
     const ANIMATION_ID = 'menu';
@@ -138,18 +268,10 @@ document.addEventListener('DOMContentLoaded', function () {
         start: 'center 0%',
         end: 'center 1%',
         onEnter: () => {
-          // console.log('enter');
           activateBottom();
         },
-        onLeave: () => {
-          // console.log('leave');
-        },
         onEnterBack: () => {
-          // console.log('enter back');
           activateTop();
-        },
-        onLeaveBack: () => {
-          // console.log('leave back');
         },
       });
     });
@@ -361,15 +483,10 @@ document.addEventListener('DOMContentLoaded', function () {
   };
 
   const accordion = function () {
-    // select the relevant items from the DOM
-    const TITLE = 'accordion';
     //elements
     const ACCORDION_WRAP = '[data-ix-accordion="wrap"]';
     const ACCORDION_ITEM = '[data-ix-accordion="item"]';
     const ACCORDION_TOP = '[data-ix-accordion="top"]';
-    const ACCORDION_BOTTOM = '[data-ix-accordion="bottom"]';
-    const ACCORDION_OPEN = '[data-ix-accordion="open"]';
-    const ACCORDION_CLOSE = '[data-ix-accordion="close"]';
     //options
     const OPTION_FIRST_OPEN = 'data-ix-accordion-first-open';
     const OPTION_ONE_ACTIVE = 'data-ix-accordion-one-active';
@@ -378,6 +495,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const ACTIVE_CLASS = 'is-active';
     const accordionLists = gsap.utils.toArray(ACCORDION_WRAP);
 
+    // utility function to open or close accordions
     const openAccordion = function (item, open = true) {
       //get state of items
       const state = Flip.getState(item, {
@@ -405,7 +523,8 @@ document.addEventListener('DOMContentLoaded', function () {
         },
       });
     };
-
+    ////////////////////////
+    // event logic
     if (accordionLists.length === 0 || accordionLists === undefined) return;
     accordionLists.forEach((list) => {
       // set up conditions for
@@ -461,12 +580,10 @@ document.addEventListener('DOMContentLoaded', function () {
         const accordionItems = list.querySelectorAll(ACCORDION_ITEM);
         accordionItems.forEach((item) => {
           item.addEventListener('mouseover', function () {
-            this.classList.add(ACTIVE_CLASS);
-            item.querySelector(ACCORDION_OPEN).click();
+            openAccordion(item);
           });
           item.addEventListener('mouseout', function () {
-            this.classList.remove(ACTIVE_CLASS);
-            item.querySelector(ACCORDION_CLOSE).click();
+            openAccordion(item, false);
           });
         });
       }
@@ -517,7 +634,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
   //////////////////////////////
   //Control Functions on page load
-
   let mm = gsap.matchMedia();
   mm.add(
     {
@@ -534,6 +650,10 @@ document.addEventListener('DOMContentLoaded', function () {
       mouseOver(gsapContext);
       parallax(gsapContext);
       menu(gsapContext);
+      scrollInHeading();
+      scrollInItem();
+      scrollInContainer();
+      scrollInStagger();
 
       if (isDesktop || isTablet) {
         accordion();
@@ -548,8 +668,12 @@ document.addEventListener('DOMContentLoaded', function () {
   //reset gsap on click of reset triggers
   resetGSAPTriggers.forEach(function (item) {
     item.addEventListener('click', function (e) {
-      console.log('scroll refresh');
       ScrollTrigger.refresh();
     });
   });
+});
+
+//on full page load refesh scroll trigger
+window.addEventListener('load', (event) => {
+  ScrollTrigger.refresh();
 });
