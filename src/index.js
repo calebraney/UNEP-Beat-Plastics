@@ -102,20 +102,12 @@ document.addEventListener('DOMContentLoaded', function () {
         ease: 'power2.out',
       });
     };
-    //handle active classes and gsap flip
-    menuItems.forEach((item) => {
-      item.addEventListener('click', function (e) {
-        activateMenuItem(item);
-      });
-    });
 
     // hide and show menu in specific sections
     const anchorItems = gsap.utils.toArray(MENU_ANCHORS);
     anchorItems.forEach((item) => {
-      // console.log(item);
       let topTargetNumber = attr(0, item.getAttribute(MENU_TARGET_ABOVE));
       let bottomTargetNumber = attr(0, item.getAttribute(MENU_TARGET_BELOW));
-      // console.log(topTargetNumber, bottomTargetNumber);
 
       //resuable function for the scroll anchors
       const activateTop = function () {
@@ -143,10 +135,10 @@ document.addEventListener('DOMContentLoaded', function () {
       ScrollTrigger.create({
         trigger: item,
         markers: false,
-        start: 'center 10%',
-        end: 'center 11%',
+        start: 'center 0%',
+        end: 'center 1%',
         onEnter: () => {
-          console.log('enter');
+          // console.log('enter');
           activateBottom();
         },
         onLeave: () => {
@@ -171,6 +163,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const PARALLAX_TRIGGER = `[data-ix-parallax="trigger"]`;
     //options
     const PARALLAX_TYPE = 'data-ix-parallax-type';
+    const PARALLAX_AMOUNT = 'data-ix-parallax-amount';
 
     const parallaxItems = gsap.utils.toArray(PARALLAX_WRAP);
     parallaxItems.forEach((parallaxItem) => {
@@ -180,6 +173,7 @@ document.addEventListener('DOMContentLoaded', function () {
       //set default animation type
       let animationType = 'uncover';
       animationType = attr('uncover', parallaxItem.getAttribute(PARALLAX_TYPE));
+      moveAmount = attr(50, PARALLAX_AMOUNT);
 
       //check breakpoints and quit function if set on specific breakpoints
       let runOnBreakpoint = checkBreakpoints(parallaxItem, ANIMATION_ID, gsapContext);
@@ -203,7 +197,7 @@ document.addEventListener('DOMContentLoaded', function () {
       }
       //check for animationType of parallax
       if (animationType === 'parallax') {
-        settings.moveStart = '-50vh';
+        settings.moveStart = `-${moveAmount}vh`;
         settings.moveEnd = '0vh';
       }
 
@@ -244,10 +238,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const MOUSEOVER_MOVE_X = 'data-ix-mouseover-move-x';
     const MOUSEOVER_MOVE_Y = 'data-ix-mouseover-move-y';
     const MOUSEOVER_ROTATE_Z = 'data-ix-mouseover-rotate-z';
-    //breakpoint options
-    const RUN_DESKTOP = 'data-ix-parallax-tablet';
-    const RUN_TABLET = 'data-ix-parallax-tablet';
-    const RUN_MOBILE = 'data-ix-parallax-mobile';
 
     // select the items
     const mouseOverItems = gsap.utils.toArray(MOUSEOVER_WRAP);
@@ -377,6 +367,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const ACCORDION_WRAP = '[data-ix-accordion="wrap"]';
     const ACCORDION_ITEM = '[data-ix-accordion="item"]';
     const ACCORDION_TOP = '[data-ix-accordion="top"]';
+    const ACCORDION_BOTTOM = '[data-ix-accordion="bottom"]';
     const ACCORDION_OPEN = '[data-ix-accordion="open"]';
     const ACCORDION_CLOSE = '[data-ix-accordion="close"]';
     //options
@@ -387,6 +378,34 @@ document.addEventListener('DOMContentLoaded', function () {
     const ACTIVE_CLASS = 'is-active';
     const accordionLists = gsap.utils.toArray(ACCORDION_WRAP);
 
+    const openAccordion = function (item, open = true) {
+      //get state of items
+      const state = Flip.getState(item, {
+        props: 'backgroundColor,margin',
+        nested: true,
+        absolute: false,
+      });
+      if (open === true) {
+        item.classList.add(ACTIVE_CLASS);
+      } else {
+        item.classList.remove(ACTIVE_CLASS);
+      }
+      // animate elements
+      Flip.from(state, {
+        duration: 0.6,
+        ease: 'power1.out',
+        onStart: () => {
+          item.style.overflow = 'hidden';
+        },
+        onComplete: () => {
+          if (open) {
+            item.style.overflow = 'visible';
+          }
+          ScrollTrigger.refresh();
+        },
+      });
+    };
+
     if (accordionLists.length === 0 || accordionLists === undefined) return;
     accordionLists.forEach((list) => {
       // set up conditions for
@@ -394,11 +413,11 @@ document.addEventListener('DOMContentLoaded', function () {
       let oneActive = attr(false, list.getAttribute(OPTION_ONE_ACTIVE));
       let keepOneOpen = attr(false, list.getAttribute(OPTION_KEEP_ONE_OPEN));
       let hoverOnly = attr(false, list.getAttribute(OPTION_HOVER_OPEN));
-      //open the first accordion
+      //get the first accordion item and all of the items
+      const accordionItems = list.querySelectorAll(ACCORDION_ITEM);
       const firstItem = list.firstElementChild;
       if (firstOpen) {
-        firstItem.classList.add(ACTIVE_CLASS);
-        firstItem.querySelector(ACCORDION_OPEN).click();
+        openAccordion(firstItem);
       }
       if (!hoverOnly) {
         // Add event listener for when accordion lists are clicked
@@ -408,40 +427,33 @@ document.addEventListener('DOMContentLoaded', function () {
           if (!clickedEl) return;
           // get all the accordions within this list and the active item
           const clickedItem = clickedEl.closest(ACCORDION_ITEM);
-          const accordionItems = list.querySelectorAll(ACCORDION_ITEM);
+
           // check if the clicked item is already active
           let clickedItemAlreadyActive = clickedItem.classList.contains(ACTIVE_CLASS);
-
           // if item is NOT ACTIVE
           if (!clickedItemAlreadyActive) {
             // check if oneActive is True
             if (oneActive) {
               // if one active is true loop through each item
               accordionItems.forEach((item) => {
-                //if item is the current item set to Active and Open
+                //if item is the current item Open
                 if (item === clickedItem) {
-                  item.classList.add(ACTIVE_CLASS);
-                  item.querySelector(ACCORDION_OPEN).click();
+                  openAccordion(item);
                 }
                 //otherwise remove active class and close
                 else {
-                  item.classList.remove(ACTIVE_CLASS);
-                  item.querySelector(ACCORDION_CLOSE).click();
+                  openAccordion(item, false);
                 }
               });
             }
             if (!oneActive) {
               // if one active is false just set the current item to active and open it
-              clickedItem.classList.add(ACTIVE_CLASS);
-              clickedItem.querySelector(ACCORDION_OPEN).click();
+              openAccordion(clickedItem);
             }
           }
-
           // if the current item IS ACTIVE and keep one open is false
           if (clickedItemAlreadyActive && !keepOneOpen) {
-            // REMOVE the active class from the clicked item
-            clickedItem.classList.remove(ACTIVE_CLASS);
-            clickedItem.querySelector(ACCORDION_CLOSE).click();
+            openAccordion(clickedItem);
           }
         });
       }
@@ -536,7 +548,8 @@ document.addEventListener('DOMContentLoaded', function () {
   //reset gsap on click of reset triggers
   resetGSAPTriggers.forEach(function (item) {
     item.addEventListener('click', function (e) {
-      scrollTrigger.refresh();
+      console.log('scroll refresh');
+      ScrollTrigger.refresh();
     });
   });
 });
