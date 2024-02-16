@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', function () {
   anchorLinks();
 
   //////////////////////////////
-  //GSAP Animations
+  //GSAP Animations - RE-usable
 
   //resuable timeline creation with option attributes for individual customization per element
   const scrollInTL = function (item) {
@@ -193,89 +193,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   };
 
-  const menu = function (gsapContext) {
-    const ANIMATION_ID = 'menu';
-    const MENU_WRAP = `[data-ix-menu="wrap"]`;
-    const MENU_ITEM = `[data-ix-menu="item"]`;
-    // const MENU_LINK = `[data-ix-menu="link"]`;
-    // const MENU_SUB_LIST = `[data-ix-menu="sub-list"]`;
-    const MENU_NUMBER = 'data-ix-menu-number';
-    const ACTIVE_CLASS = 'is-active';
-    const OPEN_CLASS = 'is-open';
-    const MENU_ANCHORS = '[data-ix-menu="anchor"]';
-    const MENU_TARGET_ABOVE = 'data-ix-menu-above';
-    const MENU_TARGET_BELOW = 'data-ix-menu-below';
-
-    const menuWrap = document.querySelector(MENU_WRAP);
-    const menuItems = gsap.utils.toArray(MENU_ITEM);
-    if (menuItems.length === 0 || !menuWrap) return;
-
-    //function to activate menu items
-    const activateMenuItem = function (activeItem) {
-      //get state of items
-      const state = Flip.getState([menuItems], {
-        // props: 'rotateX.rotateY,rotateZ',
-        nested: true,
-        absolute: true,
-      });
-      menuItems.forEach((item) => {
-        //if the item is the active one add the class otherwise remove it
-        if (item === activeItem) {
-          activeItem.classList.add(ACTIVE_CLASS);
-        } else {
-          item.classList.remove(ACTIVE_CLASS);
-        }
-      });
-      // animate element
-      Flip.from(state, {
-        duration: 0.6,
-        ease: 'power2.out',
-      });
-    };
-
-    // hide and show menu in specific sections
-    const anchorItems = gsap.utils.toArray(MENU_ANCHORS);
-    anchorItems.forEach((item) => {
-      let topTargetNumber = attr(0, item.getAttribute(MENU_TARGET_ABOVE));
-      let bottomTargetNumber = attr(0, item.getAttribute(MENU_TARGET_BELOW));
-
-      //resuable function for the scroll anchors
-      const activateTop = function () {
-        if (topTargetNumber === 0) {
-          // if the enter target is zero open the menu
-          menuWrap.classList.remove(OPEN_CLASS);
-        } else {
-          menuWrap.classList.add(OPEN_CLASS);
-          const enterTarget = document.querySelector(`[${MENU_NUMBER}="${topTargetNumber}"]`);
-          if (!enterTarget) return;
-          activateMenuItem(enterTarget);
-        }
-      };
-      const activateBottom = function () {
-        if (bottomTargetNumber === 0) {
-          // if the enter target is zero open the menu
-          menuWrap.classList.remove(OPEN_CLASS);
-        } else {
-          menuWrap.classList.add(OPEN_CLASS);
-          const enterTarget = document.querySelector(`[${MENU_NUMBER}="${bottomTargetNumber}"]`);
-          if (!enterTarget) return;
-          activateMenuItem(enterTarget);
-        }
-      };
-      ScrollTrigger.create({
-        trigger: item,
-        markers: false,
-        start: 'center 0%',
-        end: 'center 1%',
-        onEnter: () => {
-          activateBottom();
-        },
-        onEnterBack: () => {
-          activateTop();
-        },
-      });
-    });
-  };
   const parallax = function (gsapContext) {
     //animation ID
     const ANIMATION_ID = 'parallax';
@@ -334,6 +251,9 @@ document.addEventListener('DOMContentLoaded', function () {
         defaults: {
           duration: 1,
           ease: 'none',
+        },
+        onStart: () => {
+          ScrollTrigger.refresh();
         },
       });
       tl.fromTo(
@@ -587,6 +507,194 @@ document.addEventListener('DOMContentLoaded', function () {
   };
 
   //////////////////////////////
+  //GSAP Animations - Specific
+
+  const menu = function (gsapContext) {
+    const ANIMATION_ID = 'menu';
+    const MENU_WRAP = `[data-ix-menu="wrap"]`;
+    const MENU_ITEM = `[data-ix-menu="item"]`;
+    // const MENU_LINK = `[data-ix-menu="link"]`;
+    // const MENU_SUB_LIST = `[data-ix-menu="sub-list"]`;
+    const MENU_NUMBER = 'data-ix-menu-number';
+    const ACTIVE_CLASS = 'is-active';
+    const OPEN_CLASS = 'is-open';
+    const MENU_ANCHORS = '[data-ix-menu="anchor"]';
+    const MENU_TARGET_ABOVE = 'data-ix-menu-above';
+    const MENU_TARGET_BELOW = 'data-ix-menu-below';
+
+    const menuWrap = document.querySelector(MENU_WRAP);
+    const menuItems = gsap.utils.toArray(MENU_ITEM);
+    if (menuItems.length === 0 || !menuWrap) return;
+
+    //function to activate menu items
+    const activateMenuItem = function (activeItem) {
+      //get state of items
+      const state = Flip.getState([menuItems], {
+        // props: 'margin,height',
+        nested: true,
+        absolute: true,
+      });
+      menuItems.forEach((item) => {
+        //if the item is the active one add the class otherwise remove it
+        if (item === activeItem) {
+          activeItem.classList.add(ACTIVE_CLASS);
+        } else {
+          item.classList.remove(ACTIVE_CLASS);
+        }
+      });
+      // animate element
+      Flip.from(state, {
+        duration: 0.6,
+        ease: 'power1.out',
+      });
+    };
+
+    // hide and show menu in specific sections
+    const anchorItems = gsap.utils.toArray(MENU_ANCHORS);
+    anchorItems.forEach((item) => {
+      let topTargetNumber = attr(0, item.getAttribute(MENU_TARGET_ABOVE));
+      let bottomTargetNumber = attr(0, item.getAttribute(MENU_TARGET_BELOW));
+
+      //resuable function for the scroll anchors
+      const activateTop = function () {
+        if (topTargetNumber === 0) {
+          // if the enter target is zero open the menu
+          menuWrap.classList.remove(OPEN_CLASS);
+        }
+        if (0 < topTargetNumber && topTargetNumber < 5) {
+          menuWrap.classList.add(OPEN_CLASS);
+          const topTarget = document.querySelector(`[${MENU_NUMBER}="${topTargetNumber}"]`);
+          if (!topTarget) return;
+          activateMenuItem(topTarget);
+        }
+      };
+      const activateBottom = function () {
+        if (bottomTargetNumber === 0) {
+          // if the enter target is zero open the menu
+          menuWrap.classList.remove(OPEN_CLASS);
+        }
+        if (0 < bottomTargetNumber && bottomTargetNumber < 5) {
+          menuWrap.classList.add(OPEN_CLASS);
+          const bottomTarget = document.querySelector(`[${MENU_NUMBER}="${bottomTargetNumber}"]`);
+          if (!bottomTarget) return;
+          activateMenuItem(bottomTarget);
+        }
+      };
+      ScrollTrigger.create({
+        trigger: item,
+        markers: false,
+        start: 'center 0%',
+        end: 'center 1%',
+        onEnter: () => {
+          activateBottom();
+        },
+        onEnterBack: () => {
+          activateTop();
+        },
+      });
+    });
+  };
+
+  const urbanScroll = function () {
+    //get elements
+    const wrap = document.querySelector('[data-ix-urban="wrap"]');
+    const spacer = document.querySelector('[data-ix-urban="spacer"]');
+    const content = document.querySelector('[data-ix-urban="content"]');
+    const links = gsap.utils.toArray('[data-ix-urban="link"]');
+    const background = document.querySelector('[data-ix-urban="background"]');
+    const landscapeWrap = document.querySelector('[data-ix-urban="landscape-wrap"]');
+    const landscapeFront = document.querySelector('[data-ix-urban="landscape-front"]');
+    const landscapeBack = document.querySelector('[data-ix-urban="landscape-back"]');
+    //check for elements
+    if (
+      !wrap ||
+      !spacer ||
+      !content ||
+      !background ||
+      !landscapeFront ||
+      !landscapeWrap ||
+      !landscapeBack ||
+      links.length === 0
+    )
+      return;
+
+    const timeline1 = gsap.timeline({
+      scrollTrigger: {
+        trigger: content,
+        markers: false,
+        start: 'top top',
+        end: 'bottom bottom',
+        scrub: true,
+      },
+      defaults: {
+        duration: 1,
+        ease: 'none',
+      },
+      onComplete: () => {
+        ScrollTrigger.refresh();
+      },
+    });
+    timeline1.set(wrap, { opacity: 1 });
+    timeline1.fromTo(landscapeWrap, { yPercent: 100 }, { yPercent: 0, duration: 0.2 });
+    timeline1.fromTo(
+      landscapeBack,
+      {
+        clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
+      },
+      {
+        clipPath: 'polygon(0% 0%, 0% 0%, 0% 100%, 0% 100%)',
+      }
+    );
+    timeline1.fromTo(
+      landscapeFront,
+      {
+        clipPath: 'polygon(100% 0%, 100% 0%, 100% 100%, 100% 100%)',
+      },
+      {
+        clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
+      },
+      '<'
+    );
+    const timeline2 = gsap.timeline({
+      scrollTrigger: {
+        trigger: spacer,
+        markers: false,
+        start: 'top 90%',
+        end: 'top 0%',
+        scrub: true,
+      },
+      defaults: {
+        duration: 1,
+        ease: 'none',
+      },
+    });
+    timeline2.fromTo(
+      background,
+      {
+        y: '100vh',
+      },
+      {
+        y: '0vh',
+      }
+    );
+    timeline2.set(links, {
+      pointerEvents: 'auto',
+    });
+    timeline2.fromTo(
+      links,
+      {
+        yPercent: 50,
+        opacity: 0,
+      },
+      {
+        yPercent: 0,
+        opacity: 1,
+        duration: 0.2,
+        stagger: { each: 0.1, from: 'start' },
+      }
+    );
+  };
+  //////////////////////////////
   //swiper
   const sourcesSlider = function () {
     const sliderWrap = '.swiper.is-sources';
@@ -697,6 +805,7 @@ document.addEventListener('DOMContentLoaded', function () {
         mouseOver(gsapContext);
         parallax(gsapContext);
       }
+      urbanScroll();
       // conditional animations
       if (isDesktop || isTablet) {
         accordion();
