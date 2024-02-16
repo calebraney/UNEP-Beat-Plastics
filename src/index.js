@@ -2,7 +2,7 @@ import { attr, runSplit, checkBreakpoints } from './utilities';
 import SplitType from 'split-type';
 import Lenis from '@studio-freight/lenis';
 import Swiper from 'swiper';
-import { Navigation, Pagination, Autoplay } from 'swiper/modules';
+import { Navigation, Pagination, Autoplay, EffectFade } from 'swiper/modules';
 
 document.addEventListener('DOMContentLoaded', function () {
   // Comment out for production
@@ -379,9 +379,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
       //handle mouse movement
       const mouseMove = function () {
-        /////////////////////////
-        // Setting up Timeline
-
         // object that stores the value of the progress so it can be animated
         let initialProgress = { x: 0.5, y: 0.5 };
         let progressObject = { x: initialProgress.x, y: initialProgress.y };
@@ -412,7 +409,6 @@ document.addEventListener('DOMContentLoaded', function () {
           cursorYTimeline.fromTo(layer, { yPercent: moveY * -1 }, { yPercent: moveY }, 0);
         });
 
-        //////////////////////
         // Function to update timeline progress based on an inputted value
         function setTimelineProgress(xValue, yValue) {
           // animate the timeline progress value and keep the timeline in sync onUpdate
@@ -534,6 +530,7 @@ document.addEventListener('DOMContentLoaded', function () {
       let hoverOnly = attr(false, list.getAttribute(OPTION_HOVER_OPEN));
       //get the first accordion item and all of the items
       const accordionItems = list.querySelectorAll(ACCORDION_ITEM);
+      if (accordionItems.length === 0) return;
       const firstItem = list.firstElementChild;
       if (firstOpen) {
         openAccordion(firstItem);
@@ -546,7 +543,6 @@ document.addEventListener('DOMContentLoaded', function () {
           if (!clickedEl) return;
           // get all the accordions within this list and the active item
           const clickedItem = clickedEl.closest(ACCORDION_ITEM);
-
           // check if the clicked item is already active
           let clickedItemAlreadyActive = clickedItem.classList.contains(ACTIVE_CLASS);
           // if item is NOT ACTIVE
@@ -593,7 +589,7 @@ document.addEventListener('DOMContentLoaded', function () {
   //////////////////////////////
   //swiper
   const sourcesSlider = function () {
-    const sliderWrap = '.swiper';
+    const sliderWrap = '.swiper.is-sources';
     const nextButton = '.swiper-next';
     const previousButton = '.swiper-prev';
     const activeClass = 'is-active';
@@ -616,7 +612,50 @@ document.addEventListener('DOMContentLoaded', function () {
         rewind: false,
         pagination: {
           el: element.querySelector('.swiper-bullet-wrapper'),
-          bulletActiveClass: 'is-active',
+          bulletActiveClass: activeClass,
+          bulletClass: 'swiper-bullet',
+          bulletElement: 'button',
+          clickable: true,
+        },
+        navigation: {
+          nextEl: nextButtonEl,
+          prevEl: previousButtonEl,
+          disabledClass: disabledClass,
+        },
+        slideActiveClass: activeClass,
+        slideDuplicateActiveClass: activeClass,
+      });
+    });
+  };
+
+  const mapSlider = function () {
+    const sliderWrap = '.swiper.is-map';
+    const nextButton = '.swiper-next';
+    const previousButton = '.swiper-prev';
+    const activeClass = 'is-active';
+    const disabledClass = 'is-disabled';
+
+    gsap.utils.toArray(sliderWrap).forEach(function (element) {
+      nextButtonEl = element.querySelector(nextButton);
+      previousButtonEl = element.querySelector(previousButton);
+      if (!element || !nextButtonEl || !previousButtonEl) return;
+      const swiper = new Swiper(element, {
+        modules: [Navigation, Pagination, Autoplay, EffectFade],
+        slidesPerView: 1,
+        speed: 300,
+        effect: 'fade',
+        crossFade: true,
+        delay: 1000,
+        autoplay: true,
+        stopOnLastSlide: true,
+        drag: false,
+        followFinger: false,
+        freeMode: false,
+        updateOnMove: true,
+        rewind: true,
+        pagination: {
+          el: element.querySelector('.swiper-bullet-wrapper'),
+          bulletActiveClass: activeClass,
           bulletClass: 'swiper-bullet',
           bulletElement: 'button',
           clickable: true,
@@ -647,18 +686,21 @@ document.addEventListener('DOMContentLoaded', function () {
       let { isMobile, isTablet, isDesktop, reduceMotion } = gsapContext.conditions;
       // run animation functions
       hoverActive(gsapContext);
-      mouseOver(gsapContext);
-      parallax(gsapContext);
       menu(gsapContext);
-      scrollInHeading();
-      scrollInItem();
-      scrollInContainer();
-      scrollInStagger();
-
+      mapSlider();
+      //extra flair animations
+      if (!reduceMotion) {
+        scrollInHeading();
+        scrollInItem();
+        scrollInContainer();
+        scrollInStagger();
+        mouseOver(gsapContext);
+        parallax(gsapContext);
+      }
+      // conditional animations
       if (isDesktop || isTablet) {
         accordion();
       }
-
       if (isMobile) {
         sourcesSlider();
       }
