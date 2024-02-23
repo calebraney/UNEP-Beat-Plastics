@@ -6,7 +6,7 @@ import { Navigation, Pagination, Autoplay, EffectFade } from 'swiper/modules';
 
 document.addEventListener('DOMContentLoaded', function () {
   // Comment out for production
-  console.log('Local Script');
+  // console.log('Local Script');
 
   // register gsap plugin
   gsap.registerPlugin(ScrollTrigger);
@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const lenis = new Lenis({
     duration: 1,
-    easing: (t) => (t === 1 ? 1 : 1 - Math.pow(2, -10 * t)), // https://easings.net
+    easing: (t) => (t === 1 ? 1 : 1 - Math.pow(2, -10 * t)),
     touchMultiplier: 1.5,
   });
   // lenis request animation from
@@ -268,6 +268,113 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   };
 
+  const scrolling = function (gsapContext) {
+    //animation ID
+    const ANIMATION_ID = 'scrolling';
+    //elements
+    const SCROLLING_WRAP = `[data-ix-scrolling="wrap"]`;
+    const SCROLLING_TRIGGER = `[data-ix-scrolling="trigger"]`;
+    const SCROLLING_LAYER = '[data-ix-scrolling="layer"]';
+    //timeline options
+    const SCROLLING_START = 'data-ix-scrolling-start';
+    const SCROLLING_END = 'data-ix-scrolling-end';
+    const SCROLLING_SCRUB = 'data-ix-scrolling-scrub';
+    //tween options
+    const SCROLLING_POSITION = 'data-ix-scrolling-position';
+    const SCROLLING_X_START = 'data-ix-scrolling-x-start';
+    const SCROLLING_X_END = 'data-ix-scrolling-x-end';
+    const SCROLLING_Y_START = 'data-ix-scrolling-y-start';
+    const SCROLLING_Y_END = 'data-ix-scrolling-y-end';
+    const SCROLLING_ROTATE_Z_START = 'data-ix-scrolling-rotate-z-start';
+    const SCROLLING_ROTATE_Z_END = 'data-ix-scrolling-rotate-z-end';
+    const SCROLLING_OPACITY_START = 'data-ix-scrolling-opacity-start';
+    const SCROLLING_OPACITY_END = 'data-ix-scrolling-opacity-end';
+
+    const scrollingItems = gsap.utils.toArray(SCROLLING_WRAP);
+    scrollingItems.forEach((scrollingItem) => {
+      const layers = scrollingItem.querySelectorAll(SCROLLING_LAYER);
+      // return if items are null
+      if (!scrollingItem || layers.length === 0) return;
+      // find the target element if one exists, otherwise the parent is the target
+      let trigger = scrollingItem.querySelector(SCROLLING_TRIGGER);
+      if (!trigger) {
+        trigger = scrollingItem;
+      }
+      //check breakpoints and quit function if set on specific breakpoints
+      let runOnBreakpoint = checkBreakpoints(scrollingItem, ANIMATION_ID, gsapContext);
+      if (runOnBreakpoint === false) return;
+      // default GSAP options for animation
+      const tlSettings = {
+        scrub: 0.5,
+        start: 'top bottom',
+        end: 'bottom top',
+      };
+      // get custom timeline settings or set them at the default
+      tlSettings.start = attr(tlSettings.start, scrollingItem.getAttribute(SCROLLING_START));
+      tlSettings.end = attr(tlSettings.end, scrollingItem.getAttribute(SCROLLING_END));
+      tlSettings.scrub = attr(tlSettings.scrub, scrollingItem.getAttribute(SCROLLING_SCRUB));
+      // create timeline
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: trigger,
+          start: tlSettings.start,
+          end: tlSettings.end,
+          scrub: tlSettings.scrub,
+          markers: false,
+        },
+        defaults: {
+          duration: 1,
+          ease: 'none',
+        },
+      });
+      //////////////////////
+      // Adding tweens
+      layers.forEach((layer) => {
+        if (!layer) return;
+        //default tween settings
+        const tween = {
+          position: '<',
+          XStart: '0%',
+          XEnd: '0%',
+          YStart: '0%',
+          YEnd: '0%',
+          rotateZStart: 0,
+          rotateZEnd: 0,
+          opacityStart: 1,
+          opacityEnd: 1,
+        };
+        // get custom tween settings amounts or set them at the default
+        tween.position = attr(tween.position, layer.getAttribute(SCROLLING_POSITION));
+        tween.XStart = attr(tween.XStart, layer.getAttribute(SCROLLING_X_START));
+        tween.XEnd = attr(tween.XEnd, layer.getAttribute(SCROLLING_X_END));
+        tween.YStart = attr(tween.YStart, layer.getAttribute(SCROLLING_Y_START));
+        tween.XYnd = attr(tween.YEnd, layer.getAttribute(SCROLLING_Y_END));
+        tween.rotateZStart = attr(tween.rotateZStart, layer.getAttribute(SCROLLING_ROTATE_Z_START));
+        tween.rotateZEnd = attr(tween.rotateZEnd, layer.getAttribute(SCROLLING_ROTATE_Z_END));
+        tween.opacityStart = attr(tween.opacityStart, layer.getAttribute(SCROLLING_OPACITY_START));
+        tween.opacityEnd = attr(tween.opacityEnd, layer.getAttribute(SCROLLING_OPACITY_END));
+
+        //add tween
+        tl.fromTo(
+          layer,
+          {
+            y: tween.YStart,
+            x: tween.XStart,
+            rotateZ: tween.rotateZStart,
+            opacity: tween.opacityStart,
+          },
+          {
+            y: tween.YEnd,
+            x: tween.XEnd,
+            rotateZ: tween.rotateZEnd,
+            opacity: tween.opacityEnd,
+          },
+          tween.position
+        );
+      });
+    });
+  };
+
   const mouseOver = function (gsapContext) {
     const ANIMATION_ID = 'mouseover';
     //elements
@@ -277,8 +384,8 @@ document.addEventListener('DOMContentLoaded', function () {
     //options
     const MOUSEOVER_DURATION = 'data-ix-mouseover-duration';
     const MOUSEOVER_EASE = 'data-ix-mouseover-ease';
-    const MOUSEOVER_MOVE_X = 'data-ix-mouseover-move-x';
-    const MOUSEOVER_MOVE_Y = 'data-ix-mouseover-move-y';
+    const MOUSEOVER_X = 'data-ix-mouseover-x';
+    const MOUSEOVER_Y = 'data-ix-mouseover-y';
     const MOUSEOVER_ROTATE_Z = 'data-ix-mouseover-rotate-z';
 
     // select the items
@@ -287,16 +394,14 @@ document.addEventListener('DOMContentLoaded', function () {
       const layers = mouseOverItem.querySelectorAll(MOUSEOVER_LAYER);
       // return if items are null
       if (layers.length === 0) return;
-      // find the target element if one exists, otherwise tge parent is the target
+      // find the target element if one exists, otherwise the parent is the target
       let target = mouseOverItem.querySelector(MOUSEOVER_TRIGGER);
       if (!target) {
         target = mouseOverItem;
       }
-
       //check breakpoints and quit function if set on specific breakpoints
       let runOnBreakpoint = checkBreakpoints(mouseOverItem, ANIMATION_ID, gsapContext);
       if (runOnBreakpoint === false) return;
-
       //handle mouse movement
       const mouseMove = function () {
         // object that stores the value of the progress so it can be animated
@@ -309,14 +414,12 @@ document.addEventListener('DOMContentLoaded', function () {
         let cursorXTimeline = gsap.timeline({ paused: true, defaults: { ease: 'none' } });
         // Create Y Timeline
         let cursorYTimeline = gsap.timeline({ paused: true, defaults: { ease: 'none' } });
-        // For each image add a tween on the timeline
-
         //////////////////////
-        // Adding tweens
+        // add a tween for each layer
         layers.forEach((layer) => {
           // get custom move amounts or set them at the default of 10%
-          let moveX = attr(10, layer.getAttribute(MOUSEOVER_MOVE_X));
-          let moveY = attr(10, layer.getAttribute(MOUSEOVER_MOVE_Y));
+          let moveX = attr(10, layer.getAttribute(MOUSEOVER_X));
+          let moveY = attr(10, layer.getAttribute(MOUSEOVER_Y));
           let rotateZ = attr(0, layer.getAttribute(MOUSEOVER_ROTATE_Z));
           // horizontal timeline
           cursorXTimeline.fromTo(
@@ -379,12 +482,14 @@ document.addEventListener('DOMContentLoaded', function () {
     //elements
     const ANIMATION_ID = 'hoveractive';
     const HOVER_WRAP = '[data-ix-hoveractive="wrap"]';
-
+    //option for active class and default class
+    const HOVER_ACTIVE_CLASS = 'data-ix-hoveractive-class';
+    const ACTIVE_CLASS = 'is-active';
     // get all links without a no-hover attribute and any other elements with a hover attribute into an array
     const hoverElements = gsap.utils.toArray(HOVER_WRAP);
-    const activeClass = 'is-active';
     hoverElements.forEach((item) => {
       if (!item) return;
+      let activeClass = attr(ACTIVE_CLASS, item.getAttribute(HOVER_ACTIVE_CLASS));
       //check breakpoints and quit function if set on specific breakpoints
       let runOnBreakpoint = checkBreakpoints(item, ANIMATION_ID, gsapContext);
       if (runOnBreakpoint === false) return;
@@ -513,8 +618,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const ANIMATION_ID = 'menu';
     const MENU_WRAP = `[data-ix-menu="wrap"]`;
     const MENU_ITEM = `[data-ix-menu="item"]`;
-    // const MENU_LINK = `[data-ix-menu="link"]`;
-    // const MENU_SUB_LIST = `[data-ix-menu="sub-list"]`;
+    const MENU_LINK = `[data-ix-menu="link"]`;
+    const MENU_SUB_LIST = `[data-ix-menu="sub-list"]`;
+    const MENU_TEXT_WRAP = `[data-ix-menu="text-wrap"]`;
     const MENU_NUMBER = 'data-ix-menu-number';
     const ACTIVE_CLASS = 'is-active';
     const OPEN_CLASS = 'is-open';
@@ -528,9 +634,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
     //function to activate menu items
     const activateMenuItem = function (activeItem) {
+      // get target of flip
+      const flipItems = gsap.utils.toArray([MENU_TEXT_WRAP, MENU_SUB_LIST]);
       //get state of items
-      const state = Flip.getState([menuItems], {
-        // props: 'margin,height',
+      const state = Flip.getState(flipItems, {
+        props: 'margin,height',
         nested: true,
         absolute: true,
       });
@@ -544,7 +652,7 @@ document.addEventListener('DOMContentLoaded', function () {
       });
       // animate element
       Flip.from(state, {
-        duration: 0.6,
+        duration: 0.5,
         ease: 'power1.out',
       });
     };
@@ -552,8 +660,13 @@ document.addEventListener('DOMContentLoaded', function () {
     // hide and show menu in specific sections
     const anchorItems = gsap.utils.toArray(MENU_ANCHORS);
     anchorItems.forEach((item) => {
-      let topTargetNumber = attr(0, item.getAttribute(MENU_TARGET_ABOVE));
-      let bottomTargetNumber = attr(0, item.getAttribute(MENU_TARGET_BELOW));
+      //get the attribute values for the numbers in question
+      let numberTopAttribute = item.firstChild?.getAttribute(MENU_TARGET_ABOVE);
+      let numberBotAttribute = item.firstChild?.getAttribute(MENU_TARGET_BELOW);
+      // if attributes exist get their numbers
+      if (!numberTopAttribute || !numberBotAttribute) return;
+      let topTargetNumber = attr(0, numberTopAttribute);
+      let bottomTargetNumber = attr(0, numberBotAttribute);
 
       //resuable function for the scroll anchors
       const activateTop = function () {
@@ -622,7 +735,7 @@ document.addEventListener('DOMContentLoaded', function () {
       scrollTrigger: {
         trigger: content,
         markers: false,
-        start: 'top top',
+        start: 'top 25%',
         end: 'bottom bottom',
         scrub: true,
       },
@@ -635,7 +748,7 @@ document.addEventListener('DOMContentLoaded', function () {
       },
     });
     timeline1.set(wrap, { opacity: 1 });
-    timeline1.fromTo(landscapeWrap, { yPercent: 100 }, { yPercent: 0, duration: 0.2 });
+    timeline1.fromTo(landscapeWrap, { yPercent: 100 }, { yPercent: 0, duration: 0.5 });
     timeline1.fromTo(
       landscapeBack,
       {
@@ -660,7 +773,7 @@ document.addEventListener('DOMContentLoaded', function () {
         trigger: spacer,
         markers: false,
         start: 'top 90%',
-        end: 'top 0%',
+        end: 'top 10%',
         scrub: true,
       },
       defaults: {
@@ -804,6 +917,7 @@ document.addEventListener('DOMContentLoaded', function () {
         scrollInStagger();
         mouseOver(gsapContext);
         parallax(gsapContext);
+        scrolling(gsapContext);
       }
       urbanScroll();
       // conditional animations
