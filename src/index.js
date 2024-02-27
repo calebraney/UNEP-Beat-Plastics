@@ -674,7 +674,7 @@ document.addEventListener('DOMContentLoaded', function () {
           // if the enter target is zero open the menu
           menuWrap.classList.remove(OPEN_CLASS);
         }
-        if (0 < topTargetNumber && topTargetNumber < 5) {
+        if (0 < topTargetNumber && topTargetNumber < 6) {
           menuWrap.classList.add(OPEN_CLASS);
           const topTarget = document.querySelector(`[${MENU_NUMBER}="${topTargetNumber}"]`);
           if (!topTarget) return;
@@ -686,7 +686,7 @@ document.addEventListener('DOMContentLoaded', function () {
           // if the enter target is zero open the menu
           menuWrap.classList.remove(OPEN_CLASS);
         }
-        if (0 < bottomTargetNumber && bottomTargetNumber < 5) {
+        if (0 < bottomTargetNumber && bottomTargetNumber < 6) {
           menuWrap.classList.add(OPEN_CLASS);
           const bottomTarget = document.querySelector(`[${MENU_NUMBER}="${bottomTargetNumber}"]`);
           if (!bottomTarget) return;
