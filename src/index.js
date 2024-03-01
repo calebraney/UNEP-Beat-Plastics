@@ -212,7 +212,7 @@ document.addEventListener('DOMContentLoaded', function () {
       //set default animation type
       let animationType = 'uncover';
       animationType = attr('uncover', parallaxItem.getAttribute(PARALLAX_TYPE));
-      moveAmount = attr(50, PARALLAX_AMOUNT);
+      moveAmount = attr(50, parallaxItem.getAttribute(PARALLAX_AMOUNT));
 
       //check breakpoints and quit function if set on specific breakpoints
       let runOnBreakpoint = checkBreakpoints(parallaxItem, ANIMATION_ID, gsapContext);
