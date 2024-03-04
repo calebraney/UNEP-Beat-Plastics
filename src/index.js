@@ -623,6 +623,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const MENU_TEXT_WRAP = `[data-ix-menu="text-wrap"]`;
     const MENU_NUMBER = 'data-ix-menu-number';
     const ACTIVE_CLASS = 'is-active';
+    const HOVER_CLASS = 'is-hovered';
     const OPEN_CLASS = 'is-open';
     const MENU_ANCHORS = '[data-ix-menu="anchor"]';
     const MENU_TARGET_ABOVE = 'data-ix-menu-above';
@@ -630,12 +631,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const menuWrap = document.querySelector(MENU_WRAP);
     const menuItems = gsap.utils.toArray(MENU_ITEM);
-    if (menuItems.length === 0 || !menuWrap) return;
+    const menuLinks = gsap.utils.toArray(MENU_LINK);
+    if (menuItems.length === 0 || menuLinks.length === 0 || !menuWrap) return;
 
     //function to activate menu items
     const activateMenuItem = function (activeItem) {
       // get target of flip
-      const flipItems = gsap.utils.toArray([MENU_TEXT_WRAP, MENU_SUB_LIST]);
+      const flipItems = gsap.utils.toArray([MENU_SUB_LIST]);
       //get state of items
       const state = Flip.getState(flipItems, {
         props: 'margin,height',
@@ -645,7 +647,7 @@ document.addEventListener('DOMContentLoaded', function () {
       menuItems.forEach((item) => {
         //if the item is the active one add the class otherwise remove it
         if (item === activeItem) {
-          activeItem.classList.add(ACTIVE_CLASS);
+          item.classList.add(ACTIVE_CLASS);
         } else {
           item.classList.remove(ACTIVE_CLASS);
         }
@@ -656,6 +658,38 @@ document.addEventListener('DOMContentLoaded', function () {
         ease: 'power1.out',
       });
     };
+
+    //function to hover menu items
+    const hoverMenuItem = function (activeItem, active = true) {
+      // get target of flip
+      const flipItems = gsap.utils.toArray([MENU_LINK, MENU_TEXT_WRAP]);
+      //get state of items
+      const state = Flip.getState(flipItems, {
+        props: 'margin,height',
+        nested: true,
+        absolute: true,
+      });
+      if (active) {
+        activeItem.classList.add(HOVER_CLASS);
+      } else {
+        activeItem.classList.remove(HOVER_CLASS);
+      }
+      // animate element
+      Flip.from(state, {
+        duration: 0.5,
+        ease: 'power1.out',
+      });
+    };
+
+    //add hover class for menu items when item is hovered
+    menuLinks.forEach((link) => {
+      link.addEventListener('mouseenter', function (e) {
+        hoverMenuItem(link);
+      });
+      link.addEventListener('mouseleave', function (e) {
+        hoverMenuItem(link, false);
+      });
+    });
 
     // hide and show menu in specific sections
     const anchorItems = gsap.utils.toArray(MENU_ANCHORS);

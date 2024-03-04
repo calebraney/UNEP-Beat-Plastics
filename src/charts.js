@@ -1,5 +1,7 @@
 // CHART 1
 document.addEventListener('DOMContentLoaded', function () {
+  // CHART 1
+
   const ctx = document.getElementById('myChart1');
   const ctx2 = document.getElementById('myChart2');
   const ctx3 = document.getElementById('myChart3');
@@ -448,33 +450,49 @@ document.addEventListener('DOMContentLoaded', function () {
     { tooltip: 'Nauru', urbanization_rate: 100.0, waste: 541.3789018 },
     { tooltip: 'Gibraltar', urbanization_rate: 100.0, waste: 527.1766169 },
   ];
+  const trendLine = regression.polynomial(
+    chart3_data.map((el) => [el.urbanization_rate, el.waste]),
+    { order: 2 }
+  );
+  const onShowTooltip = (context) => {
+    if (context.raw.tooltip) {
+      return `${context.raw.tooltip} (${Math.round(10 * context.raw.x) / 10}%, ${Math.round(
+        context.raw.y
+      )})`;
+    } else {
+      return '';
+    }
+  };
   new Chart(ctx6, {
-    type: 'scatter',
     data: {
       datasets: [
         {
+          type: 'scatter',
           label: 'Test',
           data: chart3_data.map((el) => ({
             x: el.urbanization_rate,
             y: el.waste,
             tooltip: el.tooltip,
           })),
-
-          trendlineLinear: {
-            colorMin: 'red',
-            colorMax: 'green',
-          },
+          backgroundColor: 'rgba(102, 206, 245, 0.8)',
+        },
+        {
+          type: 'line',
+          data: trendLine.points,
+          pointRadius: 1,
+          pointRadiusHover: 1,
+          borderColor: 'rgba(225, 102, 245, 1)',
         },
       ],
     },
     options: {
       plugins: {
+        legend: {
+          display: false,
+        },
         tooltip: {
           callbacks: {
-            label: (context) =>
-              `${context.raw.tooltip} (${Math.round(10 * context.raw.x) / 10}%, ${Math.round(
-                context.raw.y
-              )})`,
+            label: onShowTooltip,
           },
         },
       },
@@ -564,14 +582,38 @@ document.addEventListener('DOMContentLoaded', function () {
   new Chart(ctx7, config_for_chart4);
 
   // Chart 5
-  const generateChart = (ctx, data) => {
+  const wmauColors = [
+    'rgba(180, 82, 196, 0.8)',
+    'rgba(225, 102, 245, 0.8)',
+    'rgba(231, 133, 247, 0.8)',
+    'rgba(238, 170, 249, 0.8)',
+  ];
+  const wucColors = [
+    'rgba(66, 132, 157, 0.8)',
+    'rgba(82, 165, 196, 0.8)',
+    'rgba(102, 206, 245, 0.8)',
+    'rgba(170, 228, 249, 0.8)',
+  ];
+  const cwmColors = [
+    'rgba(98, 142, 61, 0.8)',
+    'rgba(122, 178, 76, 0.8)',
+    'rgba(152, 223, 95, 0.8)',
+    'rgba(198, 237, 165, 0.8)',
+  ];
+  const generateChart = (ctx, data, colors, extraOpts = {}) => {
     const xLabels = [2020, 2030, 2040, 2050];
-    const datasets = data.map((el) => ({
+    const datasets = data.map((el, index) => ({
       label: el.label,
       data: el.values,
-      fill: '+1',
+      borderColor: colors[index],
+      backgroundColor: colors[index],
+      fill: {
+        target: '+1',
+        above: colors[index],
+        below: 'rgba(0,0,0,0)',
+      },
     }));
-    datasets[datasets.length - 1].fill = 'origin';
+    datasets[datasets.length - 1].fill.target = 'origin';
 
     new Chart(ctx, {
       type: 'line',
@@ -579,136 +621,361 @@ document.addEventListener('DOMContentLoaded', function () {
         labels: xLabels,
         datasets,
       },
-      options: {},
+      options: extraOpts,
     });
   };
 
   const ctx8 = document.getElementById('myChart8');
   const ctx9 = document.getElementById('myChart9');
   const ctx10 = document.getElementById('myChart10');
-  generateChart(ctx8, [
+  generateChart(
+    ctx8,
+    [
+      {
+        label: 'Uncontrolled disposal',
+        values: [919.9674576, 1200.836778, 1491.226094, 1789.328835],
+      },
+      {
+        label: 'Landfill disposal',
+        values: [400.799206, 496.239687, 586.9488973, 678.3209265],
+      },
+      {
+        label: 'Thermal treatment and disposal',
+        values: [142.6323835, 180.2495553, 212.9134862, 243.3913894],
+      },
+      {
+        label: 'Transport',
+        values: [134.7865736, 170.1383839, 204.7189751, 239.7839727],
+      },
+    ],
+    wmauColors,
     {
-      label: 'Uncontrolled disposal',
-      values: [919967457622, 1200836777753, 1491226094393, 1789328835476],
-    },
+      plugins: {
+        title: {
+          display: true,
+          text: 'Global warming potential under WmaU',
+          color: '#333333',
+          font: {
+            size: 22,
+          },
+        },
+      },
+      scales: {
+        y: {
+          position: 'left',
+          max: 2000,
+          title: {
+            text: 'Billions of kg CO2 eq',
+            display: true,
+          },
+        },
+      },
+    }
+  );
+  generateChart(
+    ctx9,
+    [
+      {
+        label: 'Uncontrolled disposal',
+        values: [29569.46282, 38597.12446, 47930.77646, 57512.35225],
+      },
+      { label: 'Landfill disposal', values: [20459.32842, 25331.21469, 29961.58694, 34625.79367] },
+      {
+        label: 'Thermal treatment and disposal',
+        values: [5784.632984, 7310.243981, 8634.970156, 9871.039273],
+      },
+      { label: 'Transport', values: [71.07633511, 89.71822982, 107.9534414, 126.4440926] },
+    ],
+    wmauColors,
     {
-      label: 'Landfill disposal',
-      values: [400799205954, 496239686993, 586948897253, 678320926485],
-    },
+      plugins: {
+        title: {
+          display: true,
+          text: 'Ecosystem quality under WmaU',
+          color: '#333333',
+          font: {
+            size: 22,
+          },
+        },
+      },
+      scales: {
+        y: {
+          position: 'left',
+          max: 60000,
+          title: {
+            text: 'Trillions PDF.m3.day',
+            display: true,
+          },
+        },
+      },
+    }
+  );
+  generateChart(
+    ctx10,
+    [
+      {
+        label: 'Uncontrolled disposal',
+        values: [1332160.818, 1738874.23, 2159373.092, 2591041.395],
+      },
+      { label: 'Landfill disposal', values: [984504.5618, 1218940.128, 1441754.021, 1666196.032] },
+      {
+        label: 'Thermal treatment and disposal',
+        values: [354530.8801, 448033.1318, 529223.4749, 604980.1691],
+      },
+      { label: 'Transport', values: [50048.28962, 63174.95047, 76015.24606, 89035.40902] },
+    ],
+    wmauColors,
     {
-      label: 'Thermal treatment and disposal',
-      values: [142632383511, 180249555300, 212913486165, 243391389388],
-    },
-    {
-      label: 'Transport',
-      values: [134786573601, 170138383877, 204718975127, 239783972696],
-    },
-  ]);
-  generateChart(ctx9, [
-    {
-      label: 'Uncontrolled disposal',
-      values: [29569462824317800, 38597124456547700, 47930776458944500, 57512352249760100],
-    },
-    { label: 'Landfill disposal', values: [2.04593e16, 2.53312e16, 2.99616e16, 3.46258e16] },
-    {
-      label: 'Thermal treatment and disposal',
-      values: [5.78463e15, 7.31024e15, 8.63497e15, 9.87104e15],
-    },
-    {
-      label: 'Transport',
-      values: [71076335105884, 89718229818798, 107953441429317, 126444092620661],
-    },
-  ]);
-  generateChart(ctx10, [
-    { label: 'Uncontrolled disposal', values: [1332160.818, 1738874.23, 2159373.092, 2591041.395] },
-    { label: 'Landfill disposal', values: [984504.5618, 1218940.128, 1441754.021, 1666196.032] },
-    {
-      label: 'Thermal treatment and disposal',
-      values: [354530.8801, 448033.1318, 529223.4749, 604980.1691],
-    },
-    { label: 'Transport', values: [50048.28962, 63174.95047, 76015.24606, 89035.40902] },
-  ]);
+      plugins: {
+        title: {
+          display: true,
+          text: 'Human health under WmaU',
+          color: '#333333',
+          font: {
+            size: 22,
+          },
+        },
+      },
+      scales: {
+        y: {
+          max: 3000000,
+          positon: 'left',
+          title: {
+            text: 'Disability-Adjusted Life Years',
+            display: true,
+          },
+        },
+      },
+    }
+  );
 
   const ctx11 = document.getElementById('myChart11');
   const ctx12 = document.getElementById('myChart12');
   const ctx13 = document.getElementById('myChart13');
-  generateChart(ctx11, [
+  generateChart(
+    ctx11,
+    [
+      {
+        label: 'Uncontrolled disposal',
+        values: [919.9674576, 794.5670972, 460.5595648, 0],
+      },
+      {
+        label: 'Landfill disposal',
+        values: [400.799206, 586.014834, 744.0371329, 942.2036729],
+      },
+      {
+        label: 'Thermal treatment and disposal',
+        values: [142.6323835, 203.9629395, 227.3035403, 246.1841495],
+      },
+      {
+        label: 'Transport',
+        values: [134.7865736, 170.1383839, 185.3269974, 199.4646247],
+      },
+    ],
+    wucColors,
     {
-      label: 'Uncontrolled disposal',
-      values: [919967457622, 794567097168, 460559564836, 0],
-    },
+      plugins: {
+        title: {
+          display: true,
+          text: 'Global warming potential under WuC',
+          color: '#333333',
+          font: {
+            size: 22,
+          },
+        },
+      },
+      scales: {
+        y: {
+          position: 'left',
+          max: 2000,
+          title: {
+            text: 'Billions of kg CO2 eq',
+            display: true,
+          },
+        },
+      },
+    }
+  );
+  generateChart(
+    ctx12,
+    [
+      { label: 'Uncontrolled disposal', values: [29569.46282, 25538.86232, 14803.23985, 0] },
+      { label: 'Landfill disposal', values: [20459.32842, 29913.90644, 37980.36482, 48096.03936] },
+      {
+        label: 'Thermal treatment and disposal',
+        values: [5784.632984, 8271.969649, 9218.576624, 9984.303117],
+      },
+      { label: 'Transport', values: [71.07633511, 89.71822982, 97.72756603, 105.1826909] },
+    ],
+    wucColors,
     {
-      label: 'Landfill disposal',
-      values: [400799205954, 586014833956, 744037132943, 942203672901],
-    },
+      plugins: {
+        title: {
+          display: true,
+          text: 'Ecosystem quality under WuC',
+          color: '#333333',
+          font: {
+            size: 22,
+          },
+        },
+      },
+      scales: {
+        y: {
+          position: 'left',
+          max: 60000,
+          title: {
+            text: 'Trillions PDF.m3.day',
+            display: true,
+          },
+        },
+      },
+    }
+  );
+  generateChart(
+    ctx13,
+    [
+      { label: 'Uncontrolled disposal', values: [1332160.818, 1150574.561, 666914.2496, 0] },
+      { label: 'Landfill disposal', values: [984504.5618, 1439459.632, 1827618.27, 2314385.359] },
+      {
+        label: 'Thermal treatment and disposal',
+        values: [354530.8801, 506975.7559, 564991.7796, 611921.9285],
+      },
+      { label: 'Transport', values: [50048.28962, 63174.95047, 68814.71198, 74064.22644] },
+    ],
+    wucColors,
     {
-      label: 'Thermal treatment and disposal',
-      values: [142632383511, 203962939492, 227303540272, 246184149481],
-    },
-    {
-      label: 'Transport',
-      values: [134786573601, 170138383877, 185326997410, 199464624746],
-    },
-  ]);
-  generateChart(ctx12, [
-    { label: 'Uncontrolled disposal', values: [2.95695e16, 2.55389e16, 1.48032e16, 0] },
-    { label: 'Landfill disposal', values: [2.04593e16, 2.99139e16, 3.79804e16, 4.8096e16] },
-    {
-      label: 'Thermal treatment and disposal',
-      values: [5.78463e15, 8.27197e15, 9.21858e15, 9.9843e15],
-    },
-    {
-      label: 'Transport',
-      values: [71076335105884, 89718229818798, 97727566034061, 105182690913014],
-    },
-  ]);
-  generateChart(ctx13, [
-    { label: 'Uncontrolled disposal', values: [1332160.818, 1150574.561, 666914.2496, 0] },
-    { label: 'Landfill disposal', values: [984504.5618, 1439459.632, 1827618.27, 2314385.359] },
-    {
-      label: 'Thermal treatment and disposal',
-      values: [354530.8801, 506975.7559, 564991.7796, 611921.9285],
-    },
-    { label: 'Transport', values: [50048.28962, 63174.95047, 68814.71198, 74064.22644] },
-  ]);
+      plugins: {
+        title: {
+          display: true,
+          text: 'Human health under WuC',
+          color: '#333333',
+          font: {
+            size: 22,
+          },
+        },
+      },
+      scales: {
+        y: {
+          max: 3000000,
+          positon: 'left',
+          title: {
+            text: 'Disability-Adjusted Life Years',
+            display: true,
+          },
+        },
+      },
+    }
+  );
 
   const ctx14 = document.getElementById('myChart14');
   const ctx15 = document.getElementById('myChart15');
   const ctx16 = document.getElementById('myChart16');
 
-  generateChart(ctx14, [
-    { label: 'Uncontrolled disposal', values: [919967457622, 794567097168, 428193681827, 0] },
+  generateChart(
+    ctx14,
+    [
+      { label: 'Uncontrolled disposal', values: [919.9674576, 794.5670972, 428.1936818, 0] },
+      { label: 'Landfill disposal', values: [400.799206, 423.1848221, 366.8925707, 283.2625303] },
+      {
+        label: 'Thermal treatment and disposal',
+        values: [142.6323835, 190.1798349, 185.1873371, 132.772916],
+      },
+      { label: 'Transport', values: [134.7865736, 170.1383839, 170.1383839, 134.7865736] },
+    ],
+    cwmColors,
     {
-      label: 'Landfill disposal',
-      values: [400799205954, 423184822094, 366892570741, 283262530291],
-    },
+      plugins: {
+        title: {
+          display: true,
+          text: 'Global warming potential under CWM',
+          color: '#333333',
+          font: {
+            size: 22,
+          },
+        },
+      },
+      scales: {
+        y: {
+          position: 'left',
+          max: 2000,
+          title: {
+            text: 'Billions of kg CO2 eq',
+            display: true,
+          },
+        },
+      },
+    }
+  );
+  generateChart(
+    ctx15,
+    [
+      { label: 'Uncontrolled disposal', values: [29569.46282, 25538.86232, 13762.94026, 0] },
+      { label: 'Landfill disposal', values: [20459.32842, 21602.03196, 18728.51914, 14459.51252] },
+      {
+        label: 'Thermal treatment and disposal',
+        values: [5784.632984, 7712.978769, 7510.501837, 5384.770068],
+      },
+      { label: 'Transport', values: [71.07633511, 89.71822982, 89.71822982, 71.07633511] },
+    ],
+    cwmColors,
     {
-      label: 'Thermal treatment and disposal',
-      values: [142632383511, 190179834880, 185187337080, 132772916013],
-    },
-    { label: 'Transport', values: [134786573601, 170138383877, 170138383877, 134786573601] },
-  ]);
-  generateChart(ctx15, [
-    { label: 'Uncontrolled disposal', values: [2.95695e16, 2.55389e16, 1.37629e16, 0] },
-    { label: 'Landfill disposal', values: [2.04593e16, 2.1602e16, 1.87285e16, 1.44595e16] },
+      plugins: {
+        title: {
+          display: true,
+          text: 'Ecosystem quality under CWM',
+          color: '#333333',
+          font: {
+            size: 22,
+          },
+        },
+      },
+      scales: {
+        y: {
+          position: 'left',
+          max: 60000,
+          title: {
+            text: 'Trillions PDF.m3.day',
+            display: true,
+          },
+        },
+      },
+    }
+  );
+  generateChart(
+    ctx16,
+    [
+      { label: 'Uncontrolled disposal', values: [1332160.818, 1150574.561, 620046.7644, 0] },
+      { label: 'Landfill disposal', values: [984504.5618, 1039491.55, 901217.8772, 695792.9285] },
+      {
+        label: 'Thermal treatment and disposal',
+        values: [354530.8801, 472716.1012, 460306.6147, 330023.9231],
+      },
+      { label: 'Transport', values: [50048.28962, 63174.95047, 63174.95047, 50048.28962] },
+    ],
+    cwmColors,
     {
-      label: 'Thermal treatment and disposal',
-      values: [5.78463e15, 7.71298e15, 7.5105e15, 5.38477e15],
-    },
-    {
-      label: 'Transport',
-      values: [71076335105884, 89718229818798, 89718229818798, 71076335105884],
-    },
-  ]);
-  generateChart(ctx16, [
-    { label: 'Uncontrolled disposal', values: [1332160.818, 1150574.561, 620046.7644, 0] },
-    { label: 'Landfill disposal', values: [984504.5618, 1039491.55, 901217.8772, 695792.9285] },
-    {
-      label: 'Thermal treatment and disposal',
-      values: [354530.8801, 472716.1012, 460306.6147, 330023.9231],
-    },
-    { label: 'Transport', values: [50048.28962, 63174.95047, 63174.95047, 50048.28962] },
-  ]);
+      plugins: {
+        title: {
+          display: true,
+          text: 'Human health under CWM',
+          color: '#333333',
+          font: {
+            size: 22,
+          },
+        },
+      },
+      scales: {
+        y: {
+          max: 3000000,
+          positon: 'left',
+          title: {
+            text: 'Disability-Adjusted Life Years',
+            display: true,
+          },
+        },
+      },
+    }
+  );
 
   // Chart 6
   const ctx17 = document.getElementById('myChart17');
@@ -736,13 +1003,13 @@ document.addEventListener('DOMContentLoaded', function () {
     'Externalities (impacts)': {
       values: [243.3, 443.1, 263.6, 108.5],
       backgroundColor: 'rgba(0, 0, 0, 0)',
-      borderColor: 'rgba(255, 0, 0, 1)',
+      borderColor: 'rgba(144, 66, 157, 1)',
       borderWidth: 1,
     },
     'Externalities (recycling gains)': {
       values: [-134.6, -220.1, -387.4, -471.1],
       backgroundColor: 'rgba(0, 0, 0, 0)',
-      borderColor: 'rgba(0, 255, 0, 1)',
+      borderColor: 'rgba(152, 223, 95, 1)',
       borderWidth: 1,
     },
   };
@@ -766,26 +1033,6 @@ document.addEventListener('DOMContentLoaded', function () {
     plugins: {
       annotation: {
         annotations: {
-          label1: {
-            type: 'label',
-            xValue: 0,
-            yValue: sumFirst + 70,
-            color: 'rgba(255, 0 , 0)',
-            content: ['Externalities from environmental', 'and health impacts'],
-            font: {
-              size: 16,
-            },
-          },
-          label2: {
-            type: 'label',
-            xValue: 0,
-            yValue: datasets_for_chart6['Externalities (recycling gains)'].values[0] - 70,
-            color: 'rgba(0, 255 , 0)',
-            content: ['Gain from recycling'],
-            font: {
-              size: 16,
-            },
-          },
           label3: {
             type: 'label',
             xValue: 0,
