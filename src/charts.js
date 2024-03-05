@@ -1,7 +1,5 @@
-// CHART 1
 document.addEventListener('DOMContentLoaded', function () {
   // CHART 1
-
   const ctx = document.getElementById('myChart1');
   const ctx2 = document.getElementById('myChart2');
   const ctx3 = document.getElementById('myChart3');
