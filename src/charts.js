@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
   // CHART 1
+
   const ctx = document.getElementById('myChart1');
   const ctx2 = document.getElementById('myChart2');
   const ctx3 = document.getElementById('myChart3');
@@ -23,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function () {
         {
           label: 'Total amount',
           borderWidth: 1,
-          data: [2126, 2684, 3229, 3782],
+          data: [2.126, 2.684, 3.229, 3.782],
           yAxisID: 'y',
           backgroundColor: colors['WMaU'],
         },
@@ -50,9 +51,9 @@ document.addEventListener('DOMContentLoaded', function () {
         y: {
           position: 'left',
           min: 0,
-          max: 5000,
+          max: 5,
           title: {
-            text: 'Total MSW (millions of tonnes)',
+            text: 'Total MSW (billions of tonnes)',
             display: true,
           },
         },
@@ -74,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function () {
         {
           label: 'Total amount',
           borderWidth: 1,
-          data: [2126, 2684, 3229, 3782],
+          data: [2.126, 2.684, 3.229, 3.782],
           yAxisID: 'y',
           backgroundColor: colors['WuC'],
         },
@@ -101,9 +102,9 @@ document.addEventListener('DOMContentLoaded', function () {
         y: {
           position: 'left',
           min: 0,
-          max: 5000,
+          max: 5,
           title: {
-            text: 'Total MSW (millions of tonnes)',
+            text: 'Total MSW (billions of tonnes)',
             display: true,
           },
         },
@@ -125,7 +126,7 @@ document.addEventListener('DOMContentLoaded', function () {
         {
           label: 'Total amount',
           borderWidth: 1,
-          data: [2126, 2684, 3229, 3782],
+          data: [2.126, 2.684, 3.229, 3.782],
           backgroundColor: colors['CWM'],
           yAxisID: 'y',
         },
@@ -152,9 +153,9 @@ document.addEventListener('DOMContentLoaded', function () {
         y: {
           position: 'left',
           min: 0,
-          max: 5000,
+          max: 5,
           title: {
-            text: 'Total MSW (millions of tonnes)',
+            text: 'Total MSW (billions of tonnes)',
             display: true,
           },
         },
@@ -454,9 +455,9 @@ document.addEventListener('DOMContentLoaded', function () {
   );
   const onShowTooltip = (context) => {
     if (context.raw.tooltip) {
-      return `${context.raw.tooltip} (${Math.round(10 * context.raw.x) / 10}%, ${Math.round(
-        context.raw.y
-      )})`;
+      const urbanization_rate = Math.round(10 * context.raw.x) / 10;
+      const kilograms_per_year = Math.round(context.raw.y);
+      return `${context.raw.tooltip}'s urbanization rate is ${urbanization_rate} per cent. The average person produces ${kilograms_per_year}kg of waste per year`;
     } else {
       return '';
     }
@@ -497,7 +498,7 @@ document.addEventListener('DOMContentLoaded', function () {
       scales: {
         x: {
           title: {
-            text: 'Urbanization rate (%)',
+            text: 'Urbanization rate (per cent)',
             display: true,
           },
         },
@@ -570,7 +571,7 @@ document.addEventListener('DOMContentLoaded', function () {
         y: {
           position: 'left',
           title: {
-            text: 'Waste collection (%)',
+            text: 'Waste collection (per cent)',
             display: true,
           },
         },
