@@ -24,7 +24,7 @@ export const runSplit = function (text) {
 export const checkBreakpoints = function (item, animationID, gsapContext) {
   //exit if items aren't found
   if (!item || !animationID || !gsapContext) {
-    console.error('breakpoint error!');
+    console.error('GSAP checkBreakpoints Error');
     return;
   }
   //create variables from GSAP context
@@ -32,7 +32,7 @@ export const checkBreakpoints = function (item, animationID, gsapContext) {
 
   //check to see if GSAP context is working
   if (isMobile === undefined || isTablet === undefined || isDesktop === undefined) {
-    console.error('GSAP Match Media Context Error');
+    console.error('GSAP Match Media Conditions Not Defined');
     return;
   }
   //breakpoint options

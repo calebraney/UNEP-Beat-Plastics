@@ -479,8 +479,9 @@ document.addEventListener('DOMContentLoaded', function () {
   };
 
   const hoverActive = function (gsapContext) {
-    //elements
+    //animation ID
     const ANIMATION_ID = 'hoveractive';
+    //elements
     const HOVER_WRAP = '[data-ix-hoveractive="wrap"]';
     //option for active class and default class
     const HOVER_ACTIVE_CLASS = 'data-ix-hoveractive-class';
@@ -503,7 +504,9 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   };
 
-  const accordion = function () {
+  const accordion = function (gsapContext) {
+    //animation ID
+    const ANIMATION_ID = 'accordion';
     //elements
     const ACCORDION_WRAP = '[data-ix-accordion="wrap"]';
     const ACCORDION_ITEM = '[data-ix-accordion="item"]';
@@ -548,6 +551,9 @@ document.addEventListener('DOMContentLoaded', function () {
     // event logic
     if (accordionLists.length === 0 || accordionLists === undefined) return;
     accordionLists.forEach((list) => {
+      //check breakpoints and quit function if set on specific breakpoints
+      let runOnBreakpoint = checkBreakpoints(list, ANIMATION_ID, gsapContext);
+      if (runOnBreakpoint === false) return;
       // set up conditions for
       let firstOpen = attr(false, list.getAttribute(OPTION_FIRST_OPEN));
       let oneActive = attr(false, list.getAttribute(OPTION_ONE_ACTIVE));
