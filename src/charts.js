@@ -52,15 +52,17 @@ document.addEventListener('DOMContentLoaded', function () {
           position: 'left',
           min: 0,
           max: 5,
+          grid: {
+            display: false,
+          },
           title: {
             text: 'Total MSW (billions of tonnes)',
             display: true,
           },
         },
         x: {
-          title: {
-            text: 'WMaU',
-            display: true,
+          grid: {
+            display: false,
           },
         },
       },
@@ -108,12 +110,6 @@ document.addEventListener('DOMContentLoaded', function () {
             display: true,
           },
         },
-        x: {
-          title: {
-            text: 'WMaU',
-            display: true,
-          },
-        },
       },
     },
   });
@@ -156,12 +152,6 @@ document.addEventListener('DOMContentLoaded', function () {
           max: 5,
           title: {
             text: 'Total MSW (billions of tonnes)',
-            display: true,
-          },
-        },
-        x: {
-          title: {
-            text: 'CWM',
             display: true,
           },
         },
@@ -566,6 +556,9 @@ document.addEventListener('DOMContentLoaded', function () {
             },
           },
         },
+        legend: {
+          display: false,
+        },
       },
       scales: {
         y: {
@@ -649,16 +642,6 @@ document.addEventListener('DOMContentLoaded', function () {
     ],
     wmauColors,
     {
-      plugins: {
-        title: {
-          display: true,
-          text: 'Global warming potential under WmaU',
-          color: '#333333',
-          font: {
-            size: 22,
-          },
-        },
-      },
       scales: {
         y: {
           position: 'left',
@@ -687,16 +670,6 @@ document.addEventListener('DOMContentLoaded', function () {
     ],
     wmauColors,
     {
-      plugins: {
-        title: {
-          display: true,
-          text: 'Ecosystem quality under WmaU',
-          color: '#333333',
-          font: {
-            size: 22,
-          },
-        },
-      },
       scales: {
         y: {
           position: 'left',
@@ -725,16 +698,6 @@ document.addEventListener('DOMContentLoaded', function () {
     ],
     wmauColors,
     {
-      plugins: {
-        title: {
-          display: true,
-          text: 'Human health under WmaU',
-          color: '#333333',
-          font: {
-            size: 22,
-          },
-        },
-      },
       scales: {
         y: {
           max: 3000000,
@@ -773,16 +736,6 @@ document.addEventListener('DOMContentLoaded', function () {
     ],
     wucColors,
     {
-      plugins: {
-        title: {
-          display: true,
-          text: 'Global warming potential under WuC',
-          color: '#333333',
-          font: {
-            size: 22,
-          },
-        },
-      },
       scales: {
         y: {
           position: 'left',
@@ -808,16 +761,6 @@ document.addEventListener('DOMContentLoaded', function () {
     ],
     wucColors,
     {
-      plugins: {
-        title: {
-          display: true,
-          text: 'Ecosystem quality under WuC',
-          color: '#333333',
-          font: {
-            size: 22,
-          },
-        },
-      },
       scales: {
         y: {
           position: 'left',
@@ -843,16 +786,6 @@ document.addEventListener('DOMContentLoaded', function () {
     ],
     wucColors,
     {
-      plugins: {
-        title: {
-          display: true,
-          text: 'Human health under WuC',
-          color: '#333333',
-          font: {
-            size: 22,
-          },
-        },
-      },
       scales: {
         y: {
           max: 3000000,
@@ -883,16 +816,6 @@ document.addEventListener('DOMContentLoaded', function () {
     ],
     cwmColors,
     {
-      plugins: {
-        title: {
-          display: true,
-          text: 'Global warming potential under CWM',
-          color: '#333333',
-          font: {
-            size: 22,
-          },
-        },
-      },
       scales: {
         y: {
           position: 'left',
@@ -918,16 +841,6 @@ document.addEventListener('DOMContentLoaded', function () {
     ],
     cwmColors,
     {
-      plugins: {
-        title: {
-          display: true,
-          text: 'Ecosystem quality under CWM',
-          color: '#333333',
-          font: {
-            size: 22,
-          },
-        },
-      },
       scales: {
         y: {
           position: 'left',
@@ -953,16 +866,6 @@ document.addEventListener('DOMContentLoaded', function () {
     ],
     cwmColors,
     {
-      plugins: {
-        title: {
-          display: true,
-          text: 'Human health under CWM',
-          color: '#333333',
-          font: {
-            size: 22,
-          },
-        },
-      },
       scales: {
         y: {
           max: 3000000,
@@ -1029,48 +932,6 @@ document.addEventListener('DOMContentLoaded', function () {
   }, 0);
 
   const options_for_chart6 = {
-    plugins: {
-      annotation: {
-        annotations: {
-          label3: {
-            type: 'label',
-            xValue: 0,
-            yValue: datasets_for_chart6['Externalities (recycling gains)'].values[0] - 140,
-            content: ['FULL NET COST', 'USD 361 billion'],
-            font: {
-              size: 16,
-            },
-          },
-          label4: {
-            type: 'label',
-            xValue: 1,
-            yValue: datasets_for_chart6['Externalities (recycling gains)'].values[1] - 140,
-            content: ['FULL NET COST', 'USD 640.3 billion'],
-            font: {
-              size: 16,
-            },
-          },
-          label5: {
-            type: 'label',
-            xValue: 2,
-            yValue: datasets_for_chart6['Externalities (recycling gains)'].values[2] - 140,
-            content: ['FULL NET COST', 'USD 270.2 billion'],
-            font: {
-              size: 16,
-            },
-          },
-          label6: {
-            type: 'label',
-            xValue: 3,
-            yValue: sumLast + 70,
-            content: ['FULL NET GAIN', 'USD 108.1 billion'],
-            font: {
-              size: 16,
-            },
-          },
-        },
-      },
-    },
     scales: {
       y: {
         stacked: true,
