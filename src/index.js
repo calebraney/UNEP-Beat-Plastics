@@ -903,10 +903,10 @@ document.addEventListener('DOMContentLoaded', function () {
       const swiper = new Swiper(element, {
         modules: [Navigation, Pagination, Autoplay, EffectFade],
         slidesPerView: 1,
-        speed: 300,
+        speed: 800,
         effect: 'fade',
         crossFade: true,
-        delay: 1000,
+        delay: 300,
         autoplay: true,
         stopOnLastSlide: true,
         drag: false,
