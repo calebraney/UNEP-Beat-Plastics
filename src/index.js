@@ -372,9 +372,8 @@ document.addEventListener('DOMContentLoaded', function () {
         // get the position attribute
         const position = attr('<', layer.getAttribute(SCROLLING_POSITION));
 
-        //add tween
+        //add tween based on vars objects
         let fromTween = tl.fromTo(layer, varsFrom, varsTo, position);
-        console.log(fromTween);
       });
     });
   };
