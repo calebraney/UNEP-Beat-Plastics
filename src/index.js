@@ -280,15 +280,21 @@ document.addEventListener('DOMContentLoaded', function () {
     const SCROLLING_END = 'data-ix-scrolling-end';
     const SCROLLING_SCRUB = 'data-ix-scrolling-scrub';
     //tween options
-    const SCROLLING_POSITION = 'data-ix-scrolling-position';
+    const SCROLLING_POSITION = 'data-ix-scrolling-position'; // sequential by default, use "<" to start tweens together
     const SCROLLING_X_START = 'data-ix-scrolling-x-start';
     const SCROLLING_X_END = 'data-ix-scrolling-x-end';
     const SCROLLING_Y_START = 'data-ix-scrolling-y-start';
     const SCROLLING_Y_END = 'data-ix-scrolling-y-end';
+    const SCROLLING_WIDTH_START = 'data-ix-scrolling-width-start';
+    const SCROLLING_WIDTH_END = 'data-ix-scrolling-width-end';
+    const SCROLLING_HEIGHT_START = 'data-ix-scrolling-height-start';
+    const SCROLLING_HEIGHT_END = 'data-ix-scrolling-height-end';
     const SCROLLING_ROTATE_Z_START = 'data-ix-scrolling-rotate-z-start';
     const SCROLLING_ROTATE_Z_END = 'data-ix-scrolling-rotate-z-end';
     const SCROLLING_OPACITY_START = 'data-ix-scrolling-opacity-start';
     const SCROLLING_OPACITY_END = 'data-ix-scrolling-opacity-end';
+    const SCROLLING_CLIP_START = 'data-ix-scrolling-clip-start';
+    const SCROLLING_CLIP_END = 'data-ix-scrolling-clip-end';
 
     const scrollingItems = gsap.utils.toArray(SCROLLING_WRAP);
     scrollingItems.forEach((scrollingItem) => {
@@ -331,46 +337,44 @@ document.addEventListener('DOMContentLoaded', function () {
       // Adding tweens
       layers.forEach((layer) => {
         if (!layer) return;
-        //default tween settings
-        const tween = {
-          position: '<',
-          XStart: '0%',
-          XEnd: '0%',
-          YStart: '0%',
-          YEnd: '0%',
-          rotateZStart: 0,
-          rotateZEnd: 0,
-          opacityStart: 1,
-          opacityEnd: 1,
+        //objects for tween
+        const varsFrom = {};
+        const varsTo = {};
+
+        //function to process data attributes and return the correct value if set.
+        const processAttribute = function (attributeName, defaultValue) {
+          const hasAttribute = layer.hasAttribute(attributeName);
+          const attributeValue = attr(defaultValue, layer.getAttribute(attributeName));
+          // if the attribute has the default value return the attribute value
+          // (alternatively, could just include the default value)
+          if (hasAttribute) {
+            return attributeValue;
+          } else {
+            return;
+          }
         };
-        // get custom tween settings amounts or set them at the default
-        tween.position = attr(tween.position, layer.getAttribute(SCROLLING_POSITION));
-        tween.XStart = attr(tween.XStart, layer.getAttribute(SCROLLING_X_START));
-        tween.XEnd = attr(tween.XEnd, layer.getAttribute(SCROLLING_X_END));
-        tween.YStart = attr(tween.YStart, layer.getAttribute(SCROLLING_Y_START));
-        tween.XYnd = attr(tween.YEnd, layer.getAttribute(SCROLLING_Y_END));
-        tween.rotateZStart = attr(tween.rotateZStart, layer.getAttribute(SCROLLING_ROTATE_Z_START));
-        tween.rotateZEnd = attr(tween.rotateZEnd, layer.getAttribute(SCROLLING_ROTATE_Z_END));
-        tween.opacityStart = attr(tween.opacityStart, layer.getAttribute(SCROLLING_OPACITY_START));
-        tween.opacityEnd = attr(tween.opacityEnd, layer.getAttribute(SCROLLING_OPACITY_END));
+        //add properties to vars objects
+        varsFrom.x = processAttribute(SCROLLING_X_START, '0%');
+        varsTo.x = processAttribute(SCROLLING_X_END, '0%');
+        varsFrom.y = processAttribute(SCROLLING_Y_START, '0%');
+        varsTo.y = processAttribute(SCROLLING_Y_END, '0%');
+        varsFrom.width = processAttribute(SCROLLING_WIDTH_START, '0%');
+        varsTo.width = processAttribute(SCROLLING_WIDTH_END, '0%');
+        varsFrom.height = processAttribute(SCROLLING_HEIGHT_START, '0%');
+        varsTo.height = processAttribute(SCROLLING_HEIGHT_END, '0%');
+        varsFrom.rotateZ = processAttribute(SCROLLING_ROTATE_Z_START, 0);
+        varsTo.rotateZ = processAttribute(SCROLLING_ROTATE_Z_END, 0);
+        varsFrom.opacity = processAttribute(SCROLLING_OPACITY_START, 0);
+        varsTo.opacity = processAttribute(SCROLLING_OPACITY_END, 0);
+        varsFrom.clipPath = processAttribute(SCROLLING_CLIP_START, 'string');
+        varsTo.clipPath = processAttribute(SCROLLING_CLIP_END, 'string');
+
+        // get the position attribute
+        const position = attr('<', layer.getAttribute(SCROLLING_POSITION));
 
         //add tween
-        tl.fromTo(
-          layer,
-          {
-            y: tween.YStart,
-            x: tween.XStart,
-            rotateZ: tween.rotateZStart,
-            opacity: tween.opacityStart,
-          },
-          {
-            y: tween.YEnd,
-            x: tween.XEnd,
-            rotateZ: tween.rotateZEnd,
-            opacity: tween.opacityEnd,
-          },
-          tween.position
-        );
+        let fromTween = tl.fromTo(layer, varsFrom, varsTo, position);
+        console.log(fromTween);
       });
     });
   };
