@@ -387,8 +387,8 @@ document.addEventListener('DOMContentLoaded', function () {
     //options
     const MOUSEOVER_DURATION = 'data-ix-mouseover-duration';
     const MOUSEOVER_EASE = 'data-ix-mouseover-ease';
-    const MOUSEOVER_X = 'data-ix-mouseover-x';
-    const MOUSEOVER_Y = 'data-ix-mouseover-y';
+    const MOUSEOVER_X = 'data-ix-mouseover-move-x';
+    const MOUSEOVER_Y = 'data-ix-mouseover-move-y';
     const MOUSEOVER_ROTATE_Z = 'data-ix-mouseover-rotate-z';
 
     // select the items
@@ -858,6 +858,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const previousButton = '.swiper-prev';
     const activeClass = 'is-active';
     const disabledClass = 'is-disabled';
+    const bulletsWrapClass = '.swiper-bullet-wrapper';
 
     gsap.utils.toArray(sliderWrap).forEach(function (element) {
       nextButtonEl = element.querySelector(nextButton);
@@ -875,7 +876,7 @@ document.addEventListener('DOMContentLoaded', function () {
         updateOnMove: true,
         rewind: false,
         pagination: {
-          el: element.querySelector('.swiper-bullet-wrapper'),
+          el: element.querySelector(bulletsWrapClass),
           bulletActiveClass: activeClass,
           bulletClass: 'swiper-bullet',
           bulletElement: 'button',
@@ -906,17 +907,21 @@ document.addEventListener('DOMContentLoaded', function () {
       const swiper = new Swiper(element, {
         modules: [Navigation, Pagination, Autoplay, EffectFade],
         slidesPerView: 1,
-        speed: 800,
+        speed: 1000,
         effect: 'fade',
         crossFade: true,
-        delay: 300,
-        autoplay: true,
-        stopOnLastSlide: true,
         drag: false,
         followFinger: false,
         freeMode: false,
         updateOnMove: true,
         rewind: true,
+        autoplay: {
+          autoplay: true,
+          delay: 300,
+          stopOnLastSlide: true,
+          disableOnInteraction: true,
+          pauseOnMouseEnter: false,
+        },
         pagination: {
           el: element.querySelector('.swiper-bullet-wrapper'),
           bulletActiveClass: activeClass,
@@ -954,21 +959,19 @@ document.addEventListener('DOMContentLoaded', function () {
       mapSlider();
       //extra flair animations
       if (!reduceMotion) {
-        scrollInHeading();
-        scrollInItem();
-        scrollInContainer();
-        scrollInStagger();
+        scrollInHeading(gsapContext);
+        scrollInItem(gsapContext);
+        scrollInContainer(gsapContext);
+        scrollInStagger(gsapContext);
         mouseOver(gsapContext);
         parallax(gsapContext);
         scrolling(gsapContext);
       }
       urbanScroll();
+      sourcesSlider();
       // conditional animations
-      if (isDesktop || isTablet) {
-        accordion();
-      }
+
       if (isMobile) {
-        sourcesSlider();
       }
     }
   );
