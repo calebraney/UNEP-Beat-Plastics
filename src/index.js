@@ -387,8 +387,8 @@ document.addEventListener('DOMContentLoaded', function () {
     //options
     const MOUSEOVER_DURATION = 'data-ix-mouseover-duration';
     const MOUSEOVER_EASE = 'data-ix-mouseover-ease';
-    const MOUSEOVER_X = 'data-ix-mouseover-move-x';
-    const MOUSEOVER_Y = 'data-ix-mouseover-move-y';
+    const MOUSEOVER_X = 'data-ix-mouseover-x';
+    const MOUSEOVER_Y = 'data-ix-mouseover-y';
     const MOUSEOVER_ROTATE_Z = 'data-ix-mouseover-rotate-z';
 
     // select the items
