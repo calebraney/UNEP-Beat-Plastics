@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function () {
 Chart.defaults.scales.category.grid = {
     ...Chart.defaults.scales.category.grid,
     display: false
-};
+}; 
 Chart.defaults.scales.category.title = {
     ...Chart.defaults.scales.category.title,
     font: {
