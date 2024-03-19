@@ -907,7 +907,7 @@ document.addEventListener('DOMContentLoaded', function () {
       const swiper = new Swiper(element, {
         modules: [Navigation, Pagination, Autoplay, EffectFade],
         slidesPerView: 1,
-        speed: 1000,
+        speed: 900,
         effect: 'fade',
         crossFade: true,
         drag: false,
@@ -917,7 +917,7 @@ document.addEventListener('DOMContentLoaded', function () {
         rewind: true,
         autoplay: {
           autoplay: true,
-          delay: 300,
+          delay: 1000,
           stopOnLastSlide: true,
           disableOnInteraction: true,
           pauseOnMouseEnter: false,
