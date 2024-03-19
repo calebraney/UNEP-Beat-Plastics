@@ -641,8 +641,7 @@ scales: {
   },
 },
 responsive: true,
-maintainAspectRatio: false,
-aspectRatio: 1.25
+aspectRatio: 1.5
 });
 generateChart(ctx9, [
 { "label": "Uncontrolled disposal", "values": [29569.46282,38597.12446,47930.77646,57512.35225 ]},
@@ -661,8 +660,7 @@ scales: {
   }
 },
 responsive: true,
-maintainAspectRatio: false,
-aspectRatio: 1.25
+aspectRatio: 1.5
 })
 generateChart(ctx10, [
 { "label": "Uncontrolled disposal",	"values": [1332160.818,	1738874.23,	2159373.092,	2591041.395] },
@@ -681,8 +679,7 @@ scales: {
   }
 },
 responsive: true,
-maintainAspectRatio: false,
-aspectRatio: 1.25
+aspectRatio: 1.5
 })
 
 const ctx11 = document.getElementById('myChart11');
@@ -717,8 +714,7 @@ scales: {
   }
 },
 responsive: true,
-maintainAspectRatio: false,
-aspectRatio: 1.25
+aspectRatio: 1.5
 });
 generateChart(ctx12, [
 { "label": "Uncontrolled disposal", "values": [29569.46282,25538.86232,14803.23985,0] },
@@ -737,8 +733,7 @@ scales: {
   }
 },
 responsive: true,
-maintainAspectRatio: false,
-aspectRatio: 1.25
+aspectRatio: 1.5
 })
 generateChart(ctx13, [
 { "label": "Uncontrolled disposal", "values": [1332160.818, 1150574.561, 666914.2496, 0]},
@@ -757,8 +752,7 @@ scales: {
   }
 },
 responsive: true,
-maintainAspectRatio: false,
-aspectRatio: 1.25
+aspectRatio: 1.5
 });
 
 const ctx14 = document.getElementById('myChart14');
@@ -782,8 +776,7 @@ scales: {
   }
 },
 responsive: true,
-maintainAspectRatio: false,
-aspectRatio: 1.25
+aspectRatio: 1.5
 });
 generateChart(ctx15, [
 { "label": "Uncontrolled disposal", "values": [ 29569.46282,25538.86232,13762.94026,0 ] },
@@ -802,8 +795,7 @@ scales: {
   }
 },
 responsive: true,
-maintainAspectRatio: false,
-aspectRatio: 1.25
+aspectRatio: 1.5
 });
 generateChart(ctx16, [
 { "label": "Uncontrolled disposal", "values": [ 1332160.818, 1150574.561, 620046.7644, 0 ]},
@@ -822,8 +814,7 @@ scales: {
   }
 },
 responsive: true,
-maintainAspectRatio: false,
-aspectRatio: 1.25
+aspectRatio: 1.5
 });
 
 // Chart 6
