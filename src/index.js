@@ -914,7 +914,7 @@ document.addEventListener('DOMContentLoaded', function () {
         followFinger: false,
         freeMode: false,
         updateOnMove: true,
-        rewind: true,
+        rewind: false,
         autoplay: {
           autoplay: true,
           delay: 1000,
