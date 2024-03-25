@@ -176,7 +176,7 @@ options: {
 
 // Chart 2
 
-const ctx4 = document.getElementById('myChart4');
+// const ctx4 = document.getElementById('myChart4');
 const ctx5 = document.getElementById('myChart5');
 const chart2_xAxisLabels = [
 "North America",
@@ -204,24 +204,6 @@ const chart2_labels = {
 
 const chart2_colors = ["rgba(225, 102, 245, 0.75)", "rgba(133, 216, 247, 0.75)", "rgba(82, 165, 196, 0.75)", "rgba(152, 223, 95, 0.75)", "rgba(17, 17, 17, 0.75)", "rgba(153, 153, 153, 0.75)"]
 
-new Chart(ctx4, {
-type: "pie",
-data: {
-  labels: ['Food and green', 'Glass', 'Paper', 'Plastic', 'Metal', 'Other'] ,
-  datasets: [{
-    data: [46.69,	4.13,	15.60,	10.60,	3.60,	19.38],
-    backgroundColor: chart2_colors
-  }],
-  options: {
-    plugins: {
-      labels: [{
-        render: 'label',
-        position: 'outside'}],
-      }
-  }
-}
-})
-
 new Chart(ctx5, {
 type: "bar",
 data: {
@@ -235,18 +217,10 @@ data: {
 options: {
   scales: {
     x: {
-      stacked: true,
-      title: {
-        text: 'Region',
-        display: true
-      }
+      stacked: true
     },
     y: {
-      stacked: true,
-      title: {
-        text: 'Waste composition (per cent)',
-        display: true
-      }
+      stacked: true
     }
   }
 } 
@@ -509,6 +483,29 @@ options: {
 }
 });
 
+// Chart 4
+const ctx7 = document.getElementById('myChart7');
+const data_for_chart4 = [
+{ "region": "North America",	"waste_collection": 100 },
+{ "region": "East Europe",	"waste_collection": 96 },
+{ "region": "North Europe",	"waste_collection": 98 },
+{ "region": "South Europe",	"waste_collection": 95 },
+{ "region": "West Europe",	"waste_collection": 99 },
+{ "region": "Australia and New Zealand",	"waste_collection": 93 },
+{ "region": "Central and South Asia",	"waste_collection": 37 },
+{ "region": "East and South East Asia",	"waste_collection": 75 },
+{ "region": "Oceania",	"waste_collection": 45 },
+{ "region": "West Asia and North Africa",	"waste_collection": 77 },
+{ "region": "Sub-Saharan Africa",	"waste_collection": 36 },
+{ "region": "Central America and the Caribbean",	"waste_collection": 83 },
+{ "region": "South America",	"waste_collection": 93 }
+].sort((el1, el2) => el2.waste_collection - el1.waste_collection)
+
+const average = (ctx) => {
+const values = ctx.chart.data.datasets[0].data;
+return values.reduce((a, b) => a + b, 0) / values.length;
+}
+
 // Chart 5
 const wmauColors = [
 "rgba(180, 82, 196, 0.8)",
@@ -555,7 +552,7 @@ options: extraOpts
 
 const ctx8 = document.getElementById('myChart8');
 const ctx9 = document.getElementById('myChart9');
-const ctx10 = document.getElementById('myChart10');
+// const ctx10 = document.getElementById('myChart10');
 generateChart(ctx8, [{
 label: "Uncontrolled disposal",
 values: [919.9674576, 1200.836778, 1491.226094, 1789.328835]
@@ -601,10 +598,29 @@ scales: {
 responsive: true,
 aspectRatio: 1.5
 })
+// generateChart(ctx10, [
+// { "label": "Uncontrolled disposal",	"values": [1332160.818,	1738874.23,	2159373.092,	2591041.395] },
+// { "label": "Landfill disposal",	"values": [984504.5618,	1218940.128,	1441754.021,	1666196.032] },
+// { "label": "Thermal treatment and disposal",	"values": [354530.8801,	448033.1318,	529223.4749,	604980.1691] },
+// { "label": "Transport",	"values": [50048.28962,	63174.95047,	76015.24606,	89035.40902] }
+// ], wmauColors, {
+//   scales: {
+//     y: {
+//       max: 3000000,
+//       positon: 'left',
+//       title: {
+//         text: 'Disability-Adjusted Life Years',
+//         display: true
+//       }
+//     }
+//   },
+//   responsive: true,
+//   aspectRatio: 1.5
+// })
 
 const ctx11 = document.getElementById('myChart11');
 const ctx12 = document.getElementById('myChart12');
-const ctx13 = document.getElementById('myChart13');
+// const ctx13 = document.getElementById('myChart13');
 generateChart(ctx11, [
   {
       "label": "Uncontrolled disposal",
@@ -655,10 +671,29 @@ scales: {
 responsive: true,
 aspectRatio: 1.5
 })
+// generateChart(ctx13, [
+//   { "label": "Uncontrolled disposal", "values": [1332160.818, 1150574.561, 666914.2496, 0]},
+//   { "label": "Landfill disposal", "values": [984504.5618, 1439459.632, 1827618.27, 2314385.359]},
+//   { "label": "Thermal treatment and disposal", "values": [354530.8801, 506975.7559, 564991.7796, 611921.9285]},
+//   { "label": "Transport", "values": [50048.28962, 63174.95047, 68814.71198, 74064.22644]},
+// ], wucColors, {
+//   scales: {
+//     y: {
+//       max: 3000000,
+//       positon: 'left',
+//       title: {
+//         text: 'Disability-Adjusted Life Years',
+//         display: true
+//       }
+//     }
+//   },
+//   responsive: true,
+//   aspectRatio: 1.5
+// });
 
 const ctx14 = document.getElementById('myChart14');
 const ctx15 = document.getElementById('myChart15');
-const ctx16 = document.getElementById('myChart16');
+// const ctx16 = document.getElementById('myChart16');
 
 generateChart(ctx14, [
 { "label": "Uncontrolled disposal" 	, "values":[ 919.9674576,794.5670972,428.1936818,0] },
@@ -698,6 +733,25 @@ scales: {
 responsive: true,
 aspectRatio: 1.5
 });
+// generateChart(ctx16, [
+//   { "label": "Uncontrolled disposal", "values": [ 1332160.818, 1150574.561, 620046.7644, 0 ]},
+//   { "label": "Landfill disposal", "values": [ 984504.5618, 1039491.55, 901217.8772, 695792.9285 ]},
+//   { "label": "Thermal treatment and disposal", "values": [ 354530.8801, 472716.1012, 460306.6147, 330023.9231 ]},
+//   { "label": "Transport", "values": [ 50048.28962, 63174.95047, 63174.95047, 50048.28962 ]},
+// ], cwmColors, {
+//   scales: {
+//     y: {
+//       max: 3000000,
+//       positon: 'left',
+//       title: {
+//         text: 'Disability-Adjusted Life Years',
+//         display: true
+//       }
+//     }
+//   },
+//   responsive: true,
+//   aspectRatio: 1.5
+// });
 
 // Chart 6
 const ctx17 = document.getElementById('myChart17');
