@@ -509,75 +509,6 @@ options: {
 }
 });
 
-// Chart 4
-const ctx7 = document.getElementById('myChart7');
-const data_for_chart4 = [
-{ "region": "North America",	"waste_collection": 100 },
-{ "region": "East Europe",	"waste_collection": 96 },
-{ "region": "North Europe",	"waste_collection": 98 },
-{ "region": "South Europe",	"waste_collection": 95 },
-{ "region": "West Europe",	"waste_collection": 99 },
-{ "region": "Australia and New Zealand",	"waste_collection": 93 },
-{ "region": "Central and South Asia",	"waste_collection": 37 },
-{ "region": "East and South East Asia",	"waste_collection": 75 },
-{ "region": "Oceania",	"waste_collection": 45 },
-{ "region": "West Asia and North Africa",	"waste_collection": 77 },
-{ "region": "Sub-Saharan Africa",	"waste_collection": 36 },
-{ "region": "Central America and the Caribbean",	"waste_collection": 83 },
-{ "region": "South America",	"waste_collection": 93 }
-].sort((el1, el2) => el2.waste_collection - el1.waste_collection)
-
-const average = (ctx) => {
-const values = ctx.chart.data.datasets[0].data;
-return values.reduce((a, b) => a + b, 0) / values.length;
-}
-
-const config_for_chart4 =  {
-type: 'bar',
-data: {
-  labels: data_for_chart4.map(el=> el.region),
-  datasets: [{
-    label: "Waste collection",
-    borderWidth: 1,
-    data: data_for_chart4.map(el => el.waste_collection),
-  }]
-},
-options: {
-  plugins: {
-    annotation: {
-      annotations: {
-        line1: {
-          type: 'line',
-          borderColor: 'black',
-          borderDash: [6,6],
-          borderWidth: 1,
-          label: {
-            display: true,
-            content: (ctx) => 'Global Average: 75%' ,
-            position: 'end'
-          },
-          scaleID: 'y',
-          value: (ctx) => 75.00
-        },
-      }
-    },
-    legend: {
-      display: false
-    }
-  },
-  scales: {
-    y: {
-      position: 'left',
-      title: {
-        text: 'Waste collection (per cent)',
-        display: true
-      }
-    }
-  }
-}
-};
-new Chart(ctx7, config_for_chart4);
-
 // Chart 5
 const wmauColors = [
 "rgba(180, 82, 196, 0.8)",
@@ -670,25 +601,6 @@ scales: {
 responsive: true,
 aspectRatio: 1.5
 })
-generateChart(ctx10, [
-{ "label": "Uncontrolled disposal",	"values": [1332160.818,	1738874.23,	2159373.092,	2591041.395] },
-{ "label": "Landfill disposal",	"values": [984504.5618,	1218940.128,	1441754.021,	1666196.032] },
-{ "label": "Thermal treatment and disposal",	"values": [354530.8801,	448033.1318,	529223.4749,	604980.1691] },
-{ "label": "Transport",	"values": [50048.28962,	63174.95047,	76015.24606,	89035.40902] }
-], wmauColors, {
-scales: {
-  y: {
-    max: 3000000,
-    positon: 'left',
-    title: {
-      text: 'Disability-Adjusted Life Years',
-      display: true
-    }
-  }
-},
-responsive: true,
-aspectRatio: 1.5
-})
 
 const ctx11 = document.getElementById('myChart11');
 const ctx12 = document.getElementById('myChart12');
@@ -743,25 +655,6 @@ scales: {
 responsive: true,
 aspectRatio: 1.5
 })
-generateChart(ctx13, [
-{ "label": "Uncontrolled disposal", "values": [1332160.818, 1150574.561, 666914.2496, 0]},
-{ "label": "Landfill disposal", "values": [984504.5618, 1439459.632, 1827618.27, 2314385.359]},
-{ "label": "Thermal treatment and disposal", "values": [354530.8801, 506975.7559, 564991.7796, 611921.9285]},
-{ "label": "Transport", "values": [50048.28962, 63174.95047, 68814.71198, 74064.22644]},
-], wucColors, {
-scales: {
-  y: {
-    max: 3000000,
-    positon: 'left',
-    title: {
-      text: 'Disability-Adjusted Life Years',
-      display: true
-    }
-  }
-},
-responsive: true,
-aspectRatio: 1.5
-});
 
 const ctx14 = document.getElementById('myChart14');
 const ctx15 = document.getElementById('myChart15');
@@ -798,25 +691,6 @@ scales: {
     max: 60000,
     title: {
       text: 'Trillions PDF.m3.day',
-      display: true
-    }
-  }
-},
-responsive: true,
-aspectRatio: 1.5
-});
-generateChart(ctx16, [
-{ "label": "Uncontrolled disposal", "values": [ 1332160.818, 1150574.561, 620046.7644, 0 ]},
-{ "label": "Landfill disposal", "values": [ 984504.5618, 1039491.55, 901217.8772, 695792.9285 ]},
-{ "label": "Thermal treatment and disposal", "values": [ 354530.8801, 472716.1012, 460306.6147, 330023.9231 ]},
-{ "label": "Transport", "values": [ 50048.28962, 63174.95047, 63174.95047, 50048.28962 ]},
-], cwmColors, {
-scales: {
-  y: {
-    max: 3000000,
-    positon: 'left',
-    title: {
-      text: 'Disability-Adjusted Life Years',
       display: true
     }
   }
