@@ -235,10 +235,18 @@ data: {
 options: {
   scales: {
     x: {
-      stacked: true
+      stacked: true,
+      title: {
+        text: 'Region',
+        display: true
+      }
     },
     y: {
-      stacked: true
+      stacked: true,
+      title: {
+        text: 'Waste composition (per cent)',
+        display: true
+      }
     }
   }
 } 
