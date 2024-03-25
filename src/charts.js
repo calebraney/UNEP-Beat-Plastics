@@ -180,18 +180,18 @@ options: {
 const ctx5 = document.getElementById('myChart5');
 const chart2_xAxisLabels = [
 "North America",
-"Central America and the Caribbean",
+"Central America/Caribbean",
 "South America",
 "North Europe",
 "West Europe",
 "South Europe",
 "East Europe",
-"West Asia and North Africa",
+"West Asia/North Africa",
 "Sub-Saharan Africa",
-"Central and South Asia",
-"East and South East Asia",
+"Central/South Asia",
+"East/South East Asia",
 "Oceania",
-"Australia and New Zealand",
+"Australia/New Zealand",
 ]
 const chart2_labels = {
 "Food and green": [28,54,52,26,31,40,34,56,61,54,55,39,44],
@@ -217,10 +217,18 @@ data: {
 options: {
   scales: {
     x: {
-      stacked: true
+      stacked: true,
+      title: {
+        text: 'Region',
+        display: true
+      }
     },
     y: {
-      stacked: true
+      stacked: true,
+      title: {
+        text: 'Waste composition (per cent)',
+        display: true
+      }
     }
   }
 } 
