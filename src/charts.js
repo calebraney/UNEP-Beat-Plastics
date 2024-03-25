@@ -559,8 +559,8 @@ options: extraOpts
 }
 
 const ctx8 = document.getElementById('myChart8');
-const ctx9 = document.getElementById('myChart9');
-// const ctx10 = document.getElementById('myChart10');
+// const ctx9 = document.getElementById('myChart9');
+const ctx10 = document.getElementById('myChart10');
 generateChart(ctx8, [{
 label: "Uncontrolled disposal",
 values: [919.9674576, 1200.836778, 1491.226094, 1789.328835]
@@ -587,48 +587,48 @@ scales: {
 responsive: true,
 aspectRatio: 1.5
 });
-generateChart(ctx9, [
-{ "label": "Uncontrolled disposal", "values": [29569.46282,38597.12446,47930.77646,57512.35225 ]},
-{ "label": "Landfill disposal", "values": [20459.32842,25331.21469,29961.58694,34625.79367] },
-{ "label": "Thermal treatment and disposal", "values": [5784.632984,7310.243981,8634.970156,9871.039273] },
-{ "label": "Transport", "values": [71.07633511,89.71822982,107.9534414,126.4440926] },
-], wmauColors, {
-scales: {
-  y: {
-    position: 'left',
-    max: 60000,
-    title: {
-      text: 'Trillions PDF.m3.day',
-      display: true
-    }
-  }
-},
-responsive: true,
-aspectRatio: 1.5
-})
-// generateChart(ctx10, [
-// { "label": "Uncontrolled disposal",	"values": [1332160.818,	1738874.23,	2159373.092,	2591041.395] },
-// { "label": "Landfill disposal",	"values": [984504.5618,	1218940.128,	1441754.021,	1666196.032] },
-// { "label": "Thermal treatment and disposal",	"values": [354530.8801,	448033.1318,	529223.4749,	604980.1691] },
-// { "label": "Transport",	"values": [50048.28962,	63174.95047,	76015.24606,	89035.40902] }
+// generateChart(ctx9, [
+// { "label": "Uncontrolled disposal", "values": [29569.46282,38597.12446,47930.77646,57512.35225 ]},
+// { "label": "Landfill disposal", "values": [20459.32842,25331.21469,29961.58694,34625.79367] },
+// { "label": "Thermal treatment and disposal", "values": [5784.632984,7310.243981,8634.970156,9871.039273] },
+// { "label": "Transport", "values": [71.07633511,89.71822982,107.9534414,126.4440926] },
 // ], wmauColors, {
-//   scales: {
-//     y: {
-//       max: 3000000,
-//       positon: 'left',
-//       title: {
-//         text: 'Disability-Adjusted Life Years',
-//         display: true
-//       }
+// scales: {
+//   y: {
+//     position: 'left',
+//     max: 60000,
+//     title: {
+//       text: 'Trillions PDF.m3.day',
+//       display: true
 //     }
-//   },
-//   responsive: true,
-//   aspectRatio: 1.5
+//   }
+// },
+// responsive: true,
+// aspectRatio: 1.5
 // })
+generateChart(ctx10, [
+{ "label": "Uncontrolled disposal",	"values": [1332160.818,	1738874.23,	2159373.092,	2591041.395] },
+{ "label": "Landfill disposal",	"values": [984504.5618,	1218940.128,	1441754.021,	1666196.032] },
+{ "label": "Thermal treatment and disposal",	"values": [354530.8801,	448033.1318,	529223.4749,	604980.1691] },
+{ "label": "Transport",	"values": [50048.28962,	63174.95047,	76015.24606,	89035.40902] }
+], wmauColors, {
+  scales: {
+    y: {
+      max: 3000000,
+      positon: 'left',
+      title: {
+        text: 'Disability-Adjusted Life Years',
+        display: true
+      }
+    }
+  },
+  responsive: true,
+  aspectRatio: 1.5
+})
 
 const ctx11 = document.getElementById('myChart11');
-const ctx12 = document.getElementById('myChart12');
-// const ctx13 = document.getElementById('myChart13');
+// const ctx12 = document.getElementById('myChart12');
+const ctx13 = document.getElementById('myChart13');
 generateChart(ctx11, [
   {
       "label": "Uncontrolled disposal",
@@ -660,48 +660,48 @@ scales: {
 responsive: true,
 aspectRatio: 1.5
 });
-generateChart(ctx12, [
-{ "label": "Uncontrolled disposal", "values": [29569.46282,25538.86232,14803.23985,0] },
-{ "label": "Landfill disposal", "values": [20459.32842,29913.90644,37980.36482,48096.03936] },
-{ "label": "Thermal treatment and disposal", "values": [5784.632984,8271.969649,9218.576624,9984.303117] },
-{ "label": "Transport", "values": [71.07633511,89.71822982,97.72756603,105.1826909]}
-], wucColors, {
-scales: {
-  y: {
-    position: 'left',
-    max: 60000,
-    title: {
-      text: 'Trillions PDF.m3.day',
-      display: true
-    }
-  }
-},
-responsive: true,
-aspectRatio: 1.5
-})
-// generateChart(ctx13, [
-//   { "label": "Uncontrolled disposal", "values": [1332160.818, 1150574.561, 666914.2496, 0]},
-//   { "label": "Landfill disposal", "values": [984504.5618, 1439459.632, 1827618.27, 2314385.359]},
-//   { "label": "Thermal treatment and disposal", "values": [354530.8801, 506975.7559, 564991.7796, 611921.9285]},
-//   { "label": "Transport", "values": [50048.28962, 63174.95047, 68814.71198, 74064.22644]},
+// generateChart(ctx12, [
+// { "label": "Uncontrolled disposal", "values": [29569.46282,25538.86232,14803.23985,0] },
+// { "label": "Landfill disposal", "values": [20459.32842,29913.90644,37980.36482,48096.03936] },
+// { "label": "Thermal treatment and disposal", "values": [5784.632984,8271.969649,9218.576624,9984.303117] },
+// { "label": "Transport", "values": [71.07633511,89.71822982,97.72756603,105.1826909]}
 // ], wucColors, {
-//   scales: {
-//     y: {
-//       max: 3000000,
-//       positon: 'left',
-//       title: {
-//         text: 'Disability-Adjusted Life Years',
-//         display: true
-//       }
+// scales: {
+//   y: {
+//     position: 'left',
+//     max: 60000,
+//     title: {
+//       text: 'Trillions PDF.m3.day',
+//       display: true
 //     }
-//   },
-//   responsive: true,
-//   aspectRatio: 1.5
-// });
+//   }
+// },
+// responsive: true,
+// aspectRatio: 1.5
+// })
+generateChart(ctx13, [
+  { "label": "Uncontrolled disposal", "values": [1332160.818, 1150574.561, 666914.2496, 0]},
+  { "label": "Landfill disposal", "values": [984504.5618, 1439459.632, 1827618.27, 2314385.359]},
+  { "label": "Thermal treatment and disposal", "values": [354530.8801, 506975.7559, 564991.7796, 611921.9285]},
+  { "label": "Transport", "values": [50048.28962, 63174.95047, 68814.71198, 74064.22644]},
+], wucColors, {
+  scales: {
+    y: {
+      max: 3000000,
+      positon: 'left',
+      title: {
+        text: 'Disability-Adjusted Life Years',
+        display: true
+      }
+    }
+  },
+  responsive: true,
+  aspectRatio: 1.5
+});
 
 const ctx14 = document.getElementById('myChart14');
-const ctx15 = document.getElementById('myChart15');
-// const ctx16 = document.getElementById('myChart16');
+// const ctx15 = document.getElementById('myChart15');
+const ctx16 = document.getElementById('myChart16');
 
 generateChart(ctx14, [
 { "label": "Uncontrolled disposal" 	, "values":[ 919.9674576,794.5670972,428.1936818,0] },
@@ -722,44 +722,44 @@ scales: {
 responsive: true,
 aspectRatio: 1.5
 });
-generateChart(ctx15, [
-{ "label": "Uncontrolled disposal", "values": [ 29569.46282,25538.86232,13762.94026,0 ] },
-{ "label": "Landfill disposal", "values": [ 20459.32842,	21602.03196,	18728.51914,	14459.51252 ] },
-{ "label": "Thermal treatment and disposal", "values": [ 5784.632984,	7712.978769,	7510.501837,	5384.770068 ] },
-{ "label": "Transport", "values": [ 71.07633511,	89.71822982,	89.71822982,	71.07633511 ] }
-], cwmColors, {
-scales: {
-  y: {
-    position: 'left',
-    max: 60000,
-    title: {
-      text: 'Trillions PDF.m3.day',
-      display: true
-    }
-  }
-},
-responsive: true,
-aspectRatio: 1.5
-});
-// generateChart(ctx16, [
-//   { "label": "Uncontrolled disposal", "values": [ 1332160.818, 1150574.561, 620046.7644, 0 ]},
-//   { "label": "Landfill disposal", "values": [ 984504.5618, 1039491.55, 901217.8772, 695792.9285 ]},
-//   { "label": "Thermal treatment and disposal", "values": [ 354530.8801, 472716.1012, 460306.6147, 330023.9231 ]},
-//   { "label": "Transport", "values": [ 50048.28962, 63174.95047, 63174.95047, 50048.28962 ]},
+// generateChart(ctx15, [
+// { "label": "Uncontrolled disposal", "values": [ 29569.46282,25538.86232,13762.94026,0 ] },
+// { "label": "Landfill disposal", "values": [ 20459.32842,	21602.03196,	18728.51914,	14459.51252 ] },
+// { "label": "Thermal treatment and disposal", "values": [ 5784.632984,	7712.978769,	7510.501837,	5384.770068 ] },
+// { "label": "Transport", "values": [ 71.07633511,	89.71822982,	89.71822982,	71.07633511 ] }
 // ], cwmColors, {
-//   scales: {
-//     y: {
-//       max: 3000000,
-//       positon: 'left',
-//       title: {
-//         text: 'Disability-Adjusted Life Years',
-//         display: true
-//       }
+// scales: {
+//   y: {
+//     position: 'left',
+//     max: 60000,
+//     title: {
+//       text: 'Trillions PDF.m3.day',
+//       display: true
 //     }
-//   },
-//   responsive: true,
-//   aspectRatio: 1.5
+//   }
+// },
+// responsive: true,
+// aspectRatio: 1.5
 // });
+generateChart(ctx16, [
+  { "label": "Uncontrolled disposal", "values": [ 1332160.818, 1150574.561, 620046.7644, 0 ]},
+  { "label": "Landfill disposal", "values": [ 984504.5618, 1039491.55, 901217.8772, 695792.9285 ]},
+  { "label": "Thermal treatment and disposal", "values": [ 354530.8801, 472716.1012, 460306.6147, 330023.9231 ]},
+  { "label": "Transport", "values": [ 50048.28962, 63174.95047, 63174.95047, 50048.28962 ]},
+], cwmColors, {
+  scales: {
+    y: {
+      max: 3000000,
+      positon: 'left',
+      title: {
+        text: 'Disability-Adjusted Life Years',
+        display: true
+      }
+    }
+  },
+  responsive: true,
+  aspectRatio: 1.5
+});
 
 // Chart 6
 const ctx17 = document.getElementById('myChart17');
