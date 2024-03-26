@@ -14,7 +14,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
   //////////////////////////////
   //Global Variables
-  const resetGSAPTriggers = document.querySelectorAll('[data-ix-reset]');
 
   //////////////////////////////
   //LENIS Smoothscroll
@@ -975,16 +974,16 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     }
   );
-
+  const resetGSAPTriggers = document.querySelectorAll('[data-ix-reset]');
   //reset gsap on click of reset triggers
   resetGSAPTriggers.forEach(function (item) {
     item.addEventListener('click', function (e) {
       ScrollTrigger.refresh();
     });
   });
-});
 
-//on full page load refesh scroll trigger
-window.addEventListener('load', (event) => {
-  ScrollTrigger.refresh();
+  //on full page load refesh scroll trigger
+  window.addEventListener('load', (event) => {
+    ScrollTrigger.refresh();
+  });
 });
