@@ -253,7 +253,7 @@ document.addEventListener('DOMContentLoaded', function () {
           ease: 'none',
         },
         onStart: () => {
-          ScrollTrigger.refresh();
+          // ScrollTrigger.refresh();
         },
       });
       tl.fromTo(
