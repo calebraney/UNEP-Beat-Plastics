@@ -62,7 +62,7 @@ options: {
         drawOnChartArea: false
       },
       title: {
-        text: 'Per capita (kg/year)',
+        text: 'Per capita (kg/day)',
         display: true,
         
       }
@@ -109,7 +109,7 @@ options: {
         drawOnChartArea: false
       },
       title: {
-        text: 'Per capita (kg/year)',
+        text: 'Per capita (kg/day)',
         display: true,
         
       }
@@ -156,7 +156,7 @@ options: {
         drawOnChartArea: false
       },
       title: {
-        text: 'Per capita (kg/year)',
+        text: 'Per capita (kg/day)',
         display: true,
         
       }
