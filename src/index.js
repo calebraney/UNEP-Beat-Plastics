@@ -787,7 +787,7 @@ document.addEventListener('DOMContentLoaded', function () {
         ease: 'none',
       },
       onComplete: () => {
-        ScrollTrigger.refresh();
+        // ScrollTrigger.refresh();
       },
     });
     timeline1.set(wrap, { opacity: 1 });
