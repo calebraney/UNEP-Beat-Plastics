@@ -6,7 +6,7 @@ import { Navigation, Pagination, Autoplay, EffectFade } from 'swiper/modules';
 
 document.addEventListener('DOMContentLoaded', function () {
   // Comment out for production
-  console.log('Local Script');
+  // console.log('Local Script');
 
   // register gsap plugin
   gsap.registerPlugin(ScrollTrigger);
